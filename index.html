@@ -1,0 +1,1072 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ТЗ из коробки</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Unbounded:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: шапка + степпер сверху, рабочая область слева, живая смета справа (на телефоне — нижняя панель) */
+:root{
+  --bg:#ECEEED; --surface:#FFFFFF; --surface-2:#F4F5F4; --ink:#1B2025; --muted:#5D6770; --line:#D3D8D7;
+  --accent:#2C5AA0; --accent-ink:#FFFFFF; --accent-soft:#E2E9F5;
+  --ok:#2B7A4B; --ok-soft:#E1F1E7; --warn:#9A6200; --warn-soft:#FBF0DA; --bad:#B3261E; --bad-soft:#FBE4E2;
+  --plan-bg:#F7F8F7; --plan-room:#FFFFFF; --plan-wall:#2A3036; --plan-item:#E2E9F5; --plan-grid:#E6E9E8;
+  --viz-bg:#E4E7E6;
+  --f-display:"Unbounded","Golos Text",system-ui,sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14181C; --surface:#1D2227; --surface-2:#242A30; --ink:#E5E8EA; --muted:#98A2AB; --line:#323A42;
+  --accent:#86A9E6; --accent-ink:#0F1A2C; --accent-soft:#223149;
+  --ok:#62BD86; --ok-soft:#1B3326; --warn:#E2AB45; --warn-soft:#3A2E17; --bad:#F2786E; --bad-soft:#3E1F1D;
+  --plan-bg:#181C20; --plan-room:#20262B; --plan-wall:#C9D0D6; --plan-item:#223149; --plan-grid:#262C32;
+  --viz-bg:#20252A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#14181C; --surface:#1D2227; --surface-2:#242A30; --ink:#E5E8EA; --muted:#98A2AB; --line:#323A42;
+  --accent:#86A9E6; --accent-ink:#0F1A2C; --accent-soft:#223149;
+  --ok:#62BD86; --ok-soft:#1B3326; --warn:#E2AB45; --warn-soft:#3A2E17; --bad:#F2786E; --bad-soft:#3E1F1D;
+  --plan-bg:#181C20; --plan-room:#20262B; --plan-wall:#C9D0D6; --plan-item:#223149; --plan-grid:#262C32;
+  --viz-bg:#20252A; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.45}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);font-weight:500;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:17px} h3{font-size:14px}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)} small{font-size:12px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* header */
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--surface);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;gap:14px;padding-block:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand h1{font-size:16px;font-weight:600}
+.brand .mark{display:inline-grid;place-items:center;width:26px;height:26px;border:2px solid var(--ink);border-radius:4px;font-family:var(--f-mono);font-size:11px;font-weight:500;align-self:center}
+.proj{color:var(--muted);font-size:13px}
+.spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:500;white-space:nowrap}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.pill.draft{background:var(--surface-2);color:var(--muted)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+.steps{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+.steps::-webkit-scrollbar{display:none}
+.step{flex:0 0 auto;border:0;background:none;padding:9px 12px 10px;border-bottom:2px solid transparent;cursor:pointer;color:var(--muted);display:flex;gap:7px;align-items:center;font-weight:500}
+.step .n{font-family:var(--f-mono);font-size:11px;border:1px solid currentColor;border-radius:4px;padding:0 4px}
+.step[aria-current="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.step:hover{color:var(--ink)}
+.step .lock{font-size:11px}
+
+/* layout */
+.app{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px;padding-block:18px 40px;max-width:1360px;margin:0 auto}
+main{min-width:0;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.sec-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.sec-h .idx{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.lead{color:var(--muted);margin:4px 0 0;max-width:70ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px 14px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field>span{font-size:12px;color:var(--muted)}
+.field input,.field select,.field textarea,.inp{background:var(--surface-2);border:1px solid var(--line);border-radius:7px;padding:7px 9px;min-width:0;width:100%}
+.field textarea{resize:vertical;min-height:64px}
+.field input[type=number],.inp[type=number]{font-family:var(--f-mono)}
+.vmsg{font-size:12px;min-height:0}
+.vmsg.bad{color:var(--bad)} .vmsg.warn{color:var(--warn)}
+.inp.bad,.field input.bad{border-color:var(--bad)}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:block;padding:6px 11px;border:1px solid var(--line);border-radius:7px;cursor:pointer;background:var(--surface-2);font-size:13px}
+.seg input:checked+span{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.seg input:focus-visible+span{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border:1px solid var(--line);border-radius:99px;background:var(--surface-2);cursor:pointer;font-size:13px}
+.chip input{accent-color:var(--accent);margin:0}
+.chip:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.big{padding:11px 16px;font-size:15px}
+.btn.ghost{border-color:transparent;background:none;color:var(--muted)}
+.btn.ghost:hover{color:var(--ink)}
+.btn.sm{padding:4px 9px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.next{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+
+/* rooms */
+.rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.room{border:1px solid var(--line);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--surface-2)}
+.room .top{display:flex;gap:8px;align-items:center}
+.room .top input{font-weight:600}
+.room .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.room .area{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.room .field input,.room .field select{background:var(--surface)}
+.comms{display:flex;gap:6px;flex-wrap:wrap}
+.zone{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;padding-block:10px;border-top:1px solid var(--line)}
+.zone:first-of-type{border-top:0}
+.zone h3{font-size:13px;padding-top:5px}
+
+/* files */
+.drop{display:flex;flex-direction:column;align-items:center;gap:6px;border:1.5px dashed var(--line);border-radius:10px;padding:22px;text-align:center;cursor:pointer;background:var(--surface-2)}
+.drop.over,.drop:hover{border-color:var(--accent);background:var(--accent-soft)}
+.drop input{position:absolute;opacity:0;width:1px;height:1px}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:500}
+td.r,th.r{text-align:right}
+.fname{display:flex;gap:10px;align-items:center;min-width:180px}
+.thumb{width:40px;height:40px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--f-mono);font-size:10px;color:var(--muted);overflow:hidden;flex:0 0 auto}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.st{font-size:12px;font-weight:500}
+.st.ok{color:var(--ok)} .st.bad{color:var(--bad)} .st.proc{color:var(--accent)}
+.bar{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden;margin-top:4px;width:120px}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.recog{border:1px solid var(--accent);background:var(--accent-soft);border-radius:9px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.recog .inp{width:80px;background:var(--surface)}
+
+/* plan */
+.plan-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,1fr);gap:16px;align-items:start}
+.plan-svg{width:100%;height:auto;display:block;background:var(--plan-bg);border-radius:8px}
+.plan-svg .room-r{fill:var(--plan-room);stroke:var(--plan-wall);stroke-width:7}
+.plan-svg .room-r.sel{fill:var(--accent-soft)}
+.plan-svg .it{fill:var(--plan-item);stroke:var(--accent);stroke-width:2;cursor:pointer}
+.plan-svg .it:hover,.plan-svg .it.pick{stroke-width:5}
+.plan-svg .it.bad{stroke:var(--bad);fill:var(--bad-soft)}
+.plan-svg text{fill:var(--ink);font-family:var(--f-body)}
+.plan-svg .lbl{font-size:24px;font-weight:600}
+.plan-svg .sub{font-size:18px;fill:var(--muted);font-family:var(--f-mono)}
+.plan-svg .itl{font-size:14px;pointer-events:none}
+.plan-svg .dim{font-size:16px;fill:var(--muted);font-family:var(--f-mono)}
+.plan-svg .win{stroke:var(--accent);stroke-width:9}
+.plan-svg .door{stroke:var(--plan-room);stroke-width:9}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:var(--surface-2);border-radius:7px;padding:5px 10px;cursor:pointer;font-size:13px}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.side-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.items{display:flex;flex-direction:column}
+.item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .cat{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.item .nm{font-weight:500}
+.item .meta{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.item .pr{font-family:var(--f-mono);text-align:right;white-space:nowrap}
+.item.bad .nm{color:var(--bad)}
+.alts{grid-column:1/-1;margin-top:8px;border:1px solid var(--accent);border-radius:8px;overflow:hidden}
+.alts .hd{padding:8px 10px;background:var(--accent-soft);font-size:12px}
+.alt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:8px 10px;border-top:1px solid var(--line);cursor:pointer;background:var(--surface);text-align:left;border-left:0;border-right:0;border-bottom:0;width:100%}
+.alt:hover{background:var(--surface-2)}
+.alt[aria-disabled="true"]{cursor:not-allowed;opacity:.62}
+.alt .why{grid-column:1/-1;font-size:12px}
+.alt .why.bad{color:var(--bad)} .alt .why.ok{color:var(--ok)}
+.alt.cur{box-shadow:inset 3px 0 0 var(--accent)}
+.delta{font-family:var(--f-mono);font-size:12px}
+.delta.up{color:var(--bad)} .delta.dn{color:var(--ok)}
+.check{display:flex;flex-direction:column;gap:2px}
+.ck{display:grid;grid-template-columns:20px minmax(0,1fr);gap:8px;padding:6px 0}
+.ck b{font-weight:500}
+.ck .ic{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;margin-top:1px}
+.ck.ok .ic{background:var(--ok-soft);color:var(--ok)}
+.ck.bad .ic{background:var(--bad-soft);color:var(--bad)}
+.ck.warn .ic{background:var(--warn-soft);color:var(--warn)}
+.ck small{display:block;color:var(--muted)}
+.ask{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--line)}
+.ask:last-child{border-bottom:0}
+.ask p{margin:0;flex:1}
+
+/* viz */
+.viz-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);gap:16px;align-items:start}
+.canvas-wrap{position:relative;border-radius:8px;overflow:hidden;background:var(--viz-bg);aspect-ratio:16/10;max-width:100%}
+.canvas-wrap canvas{width:100%;height:100%;display:block}
+.render-ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:color-mix(in srgb,var(--viz-bg) 82%,transparent);font-size:13px}
+.render-ov .bar{width:200px}
+figcaption{font-size:12px;color:var(--muted);margin-top:8px}
+.swatches{display:flex;flex-direction:column;gap:6px}
+.sw{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 9px;border:1px solid var(--line);border-radius:8px;cursor:pointer;background:var(--surface);text-align:left;width:100%}
+.sw[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.sw i{width:28px;height:28px;border-radius:5px;border:1px solid var(--line)}
+.total-big{font-family:var(--f-display);font-size:26px;font-weight:500;letter-spacing:-.02em}
+.confirm-box{display:flex;flex-direction:column;gap:10px}
+.banner{border-radius:9px;padding:10px 12px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.ok{background:var(--ok-soft);color:var(--ok)}
+.banner.info{background:var(--accent-soft);color:var(--ink)}
+
+/* smeta */
+.sum-row td{font-weight:600}
+.grp td{background:var(--surface-2);font-weight:600;font-size:13px}
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.tot{border:1px solid var(--line);border-radius:9px;padding:12px}
+.tot .k{font-size:12px;color:var(--muted)}
+.tot .v{font-family:var(--f-mono);font-size:18px;margin-top:2px}
+.tot.main{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.tot.main .k{color:inherit;opacity:.7}
+
+/* tz */
+.lockcard{text-align:center;padding:40px 16px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.lockcard .ic{font-family:var(--f-mono);font-size:12px;border:1.5px solid var(--muted);border-radius:6px;padding:6px 10px;color:var(--muted)}
+.sheet{background:#FFFFFF;color:#1B2025;border-radius:4px;padding:36px 40px;box-shadow:0 1px 0 var(--line),0 8px 30px rgba(0,0,0,.08);max-width:860px;margin:0 auto;width:100%}
+.sheet h1{font-size:22px;margin-bottom:6px}
+.sheet h2{font-size:15px;margin:26px 0 10px;padding-bottom:6px;border-bottom:1.5px solid #1B2025}
+.sheet table th,.sheet table td{border-bottom:1px solid #DADFDE;font-size:12.5px;padding:6px}
+.sheet th{color:#5D6770}
+.sheet .title-pg{border:1.5px solid #1B2025;padding:22px;display:grid;gap:4px}
+.sheet .kv{display:grid;grid-template-columns:200px minmax(0,1fr);gap:4px 12px;font-size:13px}
+.sheet .kv span:nth-child(odd){color:#5D6770}
+.sheet .imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.sheet .imgs canvas{width:100%;aspect-ratio:16/10;background:#E4E7E6;border-radius:4px}
+.sheet .imgs div{font-size:11px;color:#5D6770}
+.sheet .plan-svg{background:#F7F8F7}
+.sheet .plan-svg .room-r{fill:#fff;stroke:#2A3036}
+.sheet .plan-svg .it{fill:#E2E9F5;stroke:#2C5AA0}
+.sheet .plan-svg text{fill:#1B2025}
+.sheet .plan-svg .sub,.sheet .plan-svg .dim{fill:#5D6770}
+.sheet .plan-svg .door{stroke:#fff}
+.code{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px;font-family:var(--f-mono);font-size:12px;max-height:340px;overflow:auto;white-space:pre;margin:0}
+
+/* cost aside */
+aside.cost{position:sticky;top:calc(env(safe-area-inset-top,0px) + 106px);align-self:start;display:flex;flex-direction:column;gap:12px}
+.cost .card{padding:14px}
+.cost h2{font-size:13px;font-weight:500;color:var(--muted);font-family:var(--f-body);text-transform:uppercase;letter-spacing:.07em}
+.cline{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.cline:last-of-type{border-bottom:0}
+.cline .v{font-family:var(--f-mono);font-variant-numeric:tabular-nums;text-align:right}
+.cost .grand{margin-top:8px;padding-top:10px;border-top:1.5px solid var(--ink)}
+.cost .grand .total-big{font-size:22px}
+.meter{height:6px;border-radius:3px;background:var(--surface-2);overflow:hidden;margin:6px 0 4px}
+.meter i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.meter.budget i{background:var(--ok)}
+.meter.budget.over i{background:var(--bad)}
+.flash{animation:fl .7s ease}
+@keyframes fl{from{background:var(--accent-soft)}to{background:transparent}}
+.mob-cost{display:none}
+
+@media (max-width:1080px){
+  .plan-layout,.viz-layout{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:900px){
+  .app{grid-template-columns:minmax(0,1fr);padding-bottom:90px}
+  aside.cost{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:8;gap:0;background:var(--surface);border-top:1px solid var(--line);padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-height:70vh;overflow:auto}
+  aside.cost .card{border:0;padding:8px 0;background:none}
+  aside.cost:not(.open) .card{display:none}
+  .mob-cost{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;border:0;background:none;padding:0;cursor:pointer;text-align:left}
+  .mob-cost .total-big{font-size:18px}
+  .zone{grid-template-columns:minmax(0,1fr)}
+  .sheet{padding:20px 16px}
+  .sheet .kv{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="hbar">
+      <div class="brand"><span class="mark">ТЗ</span><h1>ТЗ из коробки</h1></div>
+      <span class="proj" id="projName">Квартира 87 · монолит, 62 м² · пример</span>
+      <span class="spacer"></span>
+      <span id="statusPill" class="pill draft">Черновик</span>
+      <button class="btn ghost sm" id="resetBtn" type="button">Сбросить к примеру</button>
+    </div>
+    <nav class="steps" id="steps" aria-label="Этапы"></nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="app">
+    <main id="main" aria-live="polite"></main>
+    <aside class="cost" id="cost" aria-label="Стоимость проекта"></aside>
+  </div>
+</div>
+
+<script>
+/* ===================== Справочники ===================== */
+const STEPS=[['form','Анкета'],['files','Файлы'],['plan','План и комплектация'],['viz','Визуализация'],['smeta','Смета'],['tz','Выгрузка ТЗ']];
+const TYPES={kitchen:'Кухня',living:'Гостиная',bedroom:'Спальня',bath:'Санузел',hall:'Прихожая',other:'Другое'};
+const OBJ={flat_new:'Квартира в новостройке (монолитная коробка)',flat_old:'Квартира на вторичном рынке',house:'Дом или таунхаус'};
+const WORKS={cosmetic:'Косметический',capital:'Капитальный',turnkey:'Под ключ'};
+const STYLES={scandi:'Скандинавский',minimal:'Минимализм',classic:'Современная классика',loft:'Лофт'};
+const CLS={econ:{n:'Эконом',k:.65,door:12000},mid:{n:'Средний',k:1,door:22000},premium:{n:'Премиум',k:2.1,door:48000}};
+const FIN={
+  wall:{paint:{n:'Покраска',w:650,m:450},wallpaper:{n:'Обои',w:450,m:650},tile:{n:'Плитка',w:2300,m:2400},decor:{n:'Декоративная штукатурка',w:1600,m:1300}},
+  floor:{laminate:{n:'Ламинат',w:550,m:1600},engineered:{n:'Инженерная доска',w:1100,m:4200},tile:{n:'Керамогранит',w:1900,m:2600},lvt:{n:'Кварцвинил',w:700,m:2100}},
+  ceil:{stretch:{n:'Натяжной',w:1100,m:350},gkl:{n:'ГКЛ под покраску',w:1700,m:650},paint:{n:'Покраска по бетону',w:700,m:250}}
+};
+const FAC=[{id:'white',n:'Белая матовая эмаль',k:1,c:'#E8E7E2'},{id:'oak',n:'Дуб, натуральный шпон',k:1.3,c:'#C29A6B'},{id:'graphite',n:'Графит, ЛДСП',k:.8,c:'#4A4E54'}];
+const KLAY={linear:'Линейная',corner:'Угловая',u:'П-образная'};
+const POINTS={kitchen:16,living:12,bedroom:10,bath:6,hall:5,other:6};
+const CLEAR={kitchen:100,living:90,bedroom:70,bath:60,hall:90,other:80};
+const SLOTS={
+  kitchen:[['fridge','Холодильник'],['oven','Духовой шкаф'],['storage','Закрытые шкафы'],['sink','Мойка'],['dw','Посудомойка'],['hob','Варочная панель'],['hood','Вытяжка'],['dining','Обеденная зона']],
+  living:[['sofa','Зона отдыха'],['tv','ТВ-зона'],['storage','Хранение'],['table','Журнальный стол']],
+  bedroom:[['bed','Спальное место'],['wardrobe','Шкаф'],['desk','Рабочее место']],
+  bath:[['tub','Ванна или душ'],['basin','Раковина'],['toilet','Унитаз'],['washer','Стиральная машина'],['cab','Пенал для хранения']],
+  hall:[['hw','Шкаф'],['bench','Обувница']],
+  other:[]
+};
+const OFF=['bath.cab'];
+// [название, ширина вдоль стены см, глубина см, цена ₽, фасадная мебель?]
+const OPT={
+ 'kitchen.fridge':[['Холодильник отдельностоящий 60 см',60,65,62000],['Холодильник встраиваемый в пенал 60 см',60,60,98000,1],['Холодильник No Frost 70 см',70,70,104000],['Side-by-Side 91 см',91,72,168000]],
+ 'kitchen.oven':[['Духовой шкаф под варочной панелью',0,0,46000],['Колонна: духовой шкаф + СВЧ, 60 см',60,60,112000,1]],
+ 'kitchen.storage':[['Модули хранения 80 см + верхний ряд',80,60,30400,1],['Модули хранения 120 см + верхний ряд',120,60,45600,1],['Модули хранения 160 см + верхний ряд',160,60,60800,1],['Модули хранения 200 см + верхний ряд',200,60,76000,1]],
+ 'kitchen.sink':[['Мойка 50 см + модуль',50,60,19000,1],['Мойка 60 см + модуль',60,60,26000,1],['Мойка 80 см с крылом + модуль',80,60,34000,1]],
+ 'kitchen.dw':[['Посудомойка встраиваемая 45 см',45,60,43000,1],['Посудомойка встраиваемая 60 см',60,60,54000,1]],
+ 'kitchen.hob':[['Индукция 4 конфорки + модуль 60',60,60,41000,1],['Индукция домино 2 конфорки + модуль 45',45,60,27000,1],['Индукция 5 конфорок + модуль 80',80,60,68000,1]],
+ 'kitchen.hood':[['Вытяжка встраиваемая 60',0,0,24000],['Вытяжка наклонная 60',0,0,36000],['Вытяжка, встроенная в варочную',0,0,62000]],
+ 'kitchen.dining':[['Стол 120×80 + 4 стула',120,80,52000],['Стол 90×70 + 2 стула',90,70,31000],['Круглый стол Ø100 + 3 стула',100,100,44000]],
+ 'living.sofa':[['Диван прямой 200 см',200,95,86000],['Диван прямой 240 см',240,100,124000],['Угловой диван 280×160',280,160,172000]],
+ 'living.tv':[['ТВ-тумба 160 см',160,40,29000,1],['Подвесная ТВ-тумба 200 см',200,40,44000,1],['ТВ-стенка 280 см с хранением',280,45,98000,1]],
+ 'living.storage':[['Стеллаж 80 см',80,35,24000,1],['Шкаф-витрина 100 см',100,45,47000,1],['Система хранения 160 см',160,45,79000,1]],
+ 'living.table':[['Журнальный стол 90×50',90,50,16000],['Журнальный стол круглый Ø60',60,60,12000]],
+ 'bedroom.bed':[['Кровать 140×200',140,210,49000],['Кровать 160×200',160,210,69000],['Кровать 180×200',180,210,91000]],
+ 'bedroom.wardrobe':[['Шкаф распашной 120×60',120,60,54000,1],['Шкаф-купе 160×60',160,60,76000,1],['Шкаф распашной 200×60',200,60,99000,1],['Шкаф-купе 240×60',240,60,128000,1]],
+ 'bedroom.desk':[['Стол-консоль 90×45',90,45,16000],['Письменный стол 100×60',100,60,19000],['Письменный стол 120×65',120,65,27000]],
+ 'bath.tub':[['Ванна 150×70',150,70,33000],['Ванна 170×75',170,75,47000],['Душевой поддон 90×90 + стекло',90,90,59000],['Душ с трапом 120×90 + стекло',120,90,74000]],
+ 'bath.basin':[['Раковина 50 см с тумбой',50,45,23000,1],['Раковина 60 см с тумбой',60,48,32000,1],['Раковина 80 см с тумбой',80,48,46000,1]],
+ 'bath.toilet':[['Унитаз напольный',40,65,19000],['Подвесной унитаз + инсталляция',50,55,44000]],
+ 'bath.washer':[['Стиральная машина 60×45',60,45,39000],['Стиральная машина 60×60',60,60,47000],['Стирально-сушильная 60×62',60,62,79000]],
+ 'bath.cab':[['Пенал 35 см',35,30,15000,1],['Шкаф над инсталляцией',0,0,18000,1]],
+ 'hall.hw':[['Шкаф 100×40',100,40,33000,1],['Шкаф 150×45',150,45,53000,1],['Шкаф-купе 200×60',200,60,79000,1]],
+ 'hall.bench':[['Обувница с сиденьем 80 см',80,35,13000],['Обувница узкая 60 см',60,25,9000]]
+};
+const DEFSEL={'kitchen.storage':1,'living.sofa':1,'bedroom.bed':1,'bedroom.desk':1,'bath.tub':1,'bath.basin':1,'bath.toilet':1,'hall.hw':1};
+const WET=['sink','dw','tub','basin','toilet','washer'];
+const ACCEPT=['jpg','jpeg','png','pdf','dwg','dxf','heic'];
+const DRAW=['pdf','dwg','dxf'];
+const MAXMB=50;
+
+/* ===================== Состояние ===================== */
+function defaults(){return{
+  object:{type:'flat_new',area:62,height:2.85,people:2,works:'capital',style:'scandi',cls:'mid',budgetMin:2.6,budgetMax:3.4},
+  rooms:[
+    {id:'r1',type:'kitchen',name:'Кухня',w:3.3,l:3.6,win:1,doors:1,el:true,pl:true,ve:true,wall:'paint',floor:'lvt',ceil:'stretch'},
+    {id:'r2',type:'living',name:'Гостиная',w:4.2,l:5.0,win:2,doors:1,el:true,pl:false,ve:false,wall:'paint',floor:'engineered',ceil:'gkl'},
+    {id:'r3',type:'bedroom',name:'Спальня',w:3.4,l:4.2,win:1,doors:1,el:true,pl:false,ve:false,wall:'wallpaper',floor:'engineered',ceil:'stretch'},
+    {id:'r4',type:'bath',name:'Санузел',w:1.8,l:2.5,win:0,doors:1,el:true,pl:true,ve:true,wall:'tile',floor:'tile',ceil:'stretch'},
+    {id:'r5',type:'hall',name:'Прихожая',w:1.6,l:5.0,win:0,doors:1,el:true,pl:false,ve:false,wall:'paint',floor:'tile',ceil:'stretch'}
+  ],
+  req:{},sel:{},klay:'corner',facade:'white',
+  keep:{windows:true,entry:true,radiators:true,risers:true},
+  avoid:'Без открытых полок на кухне. Вентканал не переносить.',
+  files:[
+    {id:'f1',name:'planirovka_kv87.pdf',ext:'pdf',size:2480000,room:'all',status:'ok',note:'Чертёж распознан: 5 помещений, размеры применены',recog:'applied'},
+    {id:'f2',name:'kuhnya_stoyak.jpg',ext:'jpg',size:3120000,room:'r1',status:'ok',note:'Фото читается, 4032×3024'},
+    {id:'f3',name:'gostinaya_okno.heic',ext:'heic',size:2210000,room:'r2',status:'ok',note:'HEIC принят, конвертация на сервере'}
+  ],
+  confirmed:null,
+  ui:{step:'form',planRoom:'r1',vizRoom:'r1',pick:null,mobOpen:false,fmt:'json'}
+}}
+let S;
+try{S=JSON.parse(localStorage.getItem('tzbox-v1'))}catch(e){}
+if(!S||!S.rooms){S=defaults()}
+S.ui=Object.assign(defaults().ui,S.ui||{},{pick:null});
+const BLOBS={};let FLASH='';
+function save(){try{localStorage.setItem('tzbox-v1',JSON.stringify(S))}catch(e){}}
+
+/* ===================== Утилиты ===================== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const rub=n=>Math.round(n).toLocaleString('ru-RU')+' ₽';
+const mln=n=>(n/1e6).toLocaleString('ru-RU',{minimumFractionDigits:2,maximumFractionDigits:2})+' млн ₽';
+const m2=n=>n.toLocaleString('ru-RU',{maximumFractionDigits:1})+' м²';
+const dec=n=>Number(n).toLocaleString('ru-RU',{maximumFractionDigits:2});
+const fac=()=>FAC.find(f=>f.id===S.facade)||FAC[0];
+const roomOk=r=>r.w>=0.8&&r.w<=15&&r.l>=0.8&&r.l<=15;
+const isOn=(r,slot)=>S.req[r.id+'.'+slot]??!OFF.includes(r.type+'.'+slot);
+const selIdx=(r,slot)=>S.sel[r.id+'.'+slot]??DEFSEL[r.type+'.'+slot]??0;
+function optObj(type,slot,i){const a=OPT[type+'.'+slot][i];return{n:a[0],w:a[1],d:a[2],base:a[3],f:!!a[4],p:a[3]*(a[4]?fac().k:1)}}
+function sig(){return JSON.stringify({o:S.object,r:S.rooms,q:S.req,s:S.sel,k:S.klay,f:S.facade,kp:S.keep,a:S.avoid})}
+
+/* ===================== Раскладка комнаты ===================== */
+function wallFor(type,slot){
+  if(type==='kitchen'){
+    if(slot==='dining')return'center'; if(slot==='hood')return'none';
+    const L={linear:{},corner:{dw:'left',hob:'left'},u:{storage:'left',hob:'right'}}[S.klay]||{};
+    return L[slot]||'top';
+  }
+  return({living:{sofa:'bottom',tv:'top',storage:'top',table:'center'},
+    bedroom:{bed:'top',wardrobe:'left',desk:'bottom'},
+    bath:{tub:'top',basin:'left',washer:'left',cab:'left',toilet:'right'},
+    hall:{hw:'left',bench:'left'}}[type]||{})[slot]||'top';
+}
+function layout(r,override){
+  const W=r.w*100,L=r.l*100,items=[];
+  (SLOTS[r.type]||[]).forEach(([slot,label])=>{
+    if(!isOn(r,slot))return;
+    const i=override&&override.slot===slot?override.i:selIdx(r,slot);
+    const o=optObj(r.type,slot,i);
+    items.push(Object.assign(o,{slot,label,i,wall:o.w>0?wallFor(r.type,slot):'none'}));
+  });
+  const on=w=>items.filter(i=>i.wall===w);
+  const md=a=>a.reduce((m,i)=>Math.max(m,i.d),0);
+  const tD=md(on('top')),bD=md(on('bottom')),lD=md(on('left')),rD=md(on('right'));
+  const free={},issues=[];
+  const place=(wall,start,end)=>{
+    const list=on(wall);if(!list.length)return;
+    const len=end-start,used=list.reduce((s,i)=>s+i.w,0);free[wall]=len-used;
+    let pos=start;
+    if(r.type==='bedroom'&&wall==='top')pos=start+(len-used)/2;
+    if(r.type==='bedroom'&&wall==='bottom')pos=end-used;
+    list.forEach(it=>{
+      if(wall==='top')Object.assign(it,{x:pos,y:0,rw:it.w,rh:it.d});
+      if(wall==='bottom')Object.assign(it,{x:pos,y:L-it.d,rw:it.w,rh:it.d});
+      if(wall==='left')Object.assign(it,{x:0,y:pos,rw:it.d,rh:it.w});
+      if(wall==='right')Object.assign(it,{x:W-it.d,y:pos,rw:it.d,rh:it.w});
+      it.free=len-used;pos+=it.w;
+    });
+    if(used>len){list.forEach(it=>it.bad=true);issues.push({slot:list[list.length-1].slot,msg:`${r.name}: на стене не хватает ${Math.round(used-len)} см`})}
+  };
+  place('top',0,W);place('bottom',0,W);place('left',tD,L-bD);place('right',tD,L-bD);
+  const fW=W-lD-rD,fL=L-tD-bD,need=CLEAR[r.type]||80;
+  const hasH=lD||rD,hasV=tD||bD;
+  if(hasH&&fW<need)issues.push({slot:(on('left')[0]||on('right')[0]).slot,msg:`${r.name}: проход между рядами ${Math.round(fW)} см, нужно от ${need}`});
+  if(hasV&&fL<need)issues.push({slot:(on('bottom')[0]||on('top')[0]).slot,msg:`${r.name}: проход ${Math.round(fL)} см, нужно от ${need}`});
+  on('center').forEach(it=>{
+    const pw=it.slot==='dining'?60:0,pl=it.slot==='dining'?110:80;
+    Object.assign(it,{x:lD+(fW-it.w)/2,y:tD+(fL-it.d)/2,rw:it.w,rh:it.d});
+    if(fW<it.w+pw||fL<it.d+pl){it.bad=true;issues.push({slot:it.slot,msg:`${r.name}: ${it.label.toLowerCase()} не помещается со свободным обходом`})}
+  });
+  if(r.type==='bedroom'){const b=on('top').find(i=>i.slot==='bed');if(b){const g=(W-b.w)/2;if(g<55){b.bad=true;issues.push({slot:'bed',msg:`${r.name}: подход к кровати ${Math.round(g)} см, нужно от 55`})}}}
+  if(r.type==='living'){const tv=on('top').find(i=>i.slot==='tv'),so=on('bottom').find(i=>i.slot==='sofa');if(tv&&so&&fL<200){issues.push({slot:'sofa',msg:`${r.name}: до ТВ ${Math.round(fL)} см, комфортно от 200`})}}
+  issues.forEach(is=>{const it=items.find(i=>i.slot===is.slot);if(it)it.bad=true});
+  return{W,L,items,issues,free,fW,fL,tD,bD,lD,rD};
+}
+function kitchenRun(lay){return lay.items.filter(i=>i.wall!=='none'&&i.wall!=='center'&&!['fridge','oven'].includes(i.slot)).reduce((s,i)=>s+i.w,0)}
+
+/* ===================== Расчёт ===================== */
+function compute(){
+  const t0=performance.now(),o=S.object,cap=o.works!=='cosmetic',k=CLS[o.cls].k;
+  const rooms=S.rooms.filter(roomOk);
+  let floorA=0,wallA=0,points=0,wet=0,doors=0,bathA=0,spots=0;
+  const agg={wall:{},floor:{},ceil:{}};const add=(g,key,v)=>agg[g][key]=(agg[g][key]||0)+v;
+  const spec=[],lays={};
+  rooms.forEach(r=>{
+    const a=r.w*r.l,wa=Math.max(0,2*(r.w+r.l)*o.height-r.win*2.2-r.doors*1.9);
+    floorA+=a;wallA+=wa;add('wall',r.wall,wa);add('floor',r.floor,a);add('ceil',r.ceil,a);
+    if(r.el)points+=POINTS[r.type]||6;doors+=r.doors;if(r.type==='bath')bathA+=a;
+    const sp=Math.max(2,Math.ceil(a/2.4));spots+=sp;
+    const lay=layout(r);lays[r.id]=lay;
+    lay.items.forEach(it=>{spec.push({room:r.name,rid:r.id,slot:it.slot,cat:it.label,n:it.n,dim:it.w?`${it.w}×${it.d}`:'встр.',q:1,p:it.p});if(WET.includes(it.slot))wet++});
+    if(r.type==='kitchen'){const run=kitchenRun(lay);if(run>0){
+      spec.push({room:r.name,rid:r.id,slot:'_upper',cat:'Кухня',n:`Верхний ряд шкафов, ${fac().n.toLowerCase()}`,dim:`${run} см`,q:1,p:run*200*fac().k});
+      spec.push({room:r.name,rid:r.id,slot:'_top',cat:'Кухня',n:'Столешница, кварцевый агломерат',dim:`${run} см`,q:1,p:run*85*Math.max(1,k)});}}
+  });
+  const furn=spec.reduce((s,i)=>s+i.p,0);
+  const W=[];const grp=(zone,rows)=>{rows=rows.filter(x=>x&&x.q>0);if(rows.length)W.push({zone,rows})};
+  grp('Демонтаж и подготовка',[{n:'Укрытие, вынос строительного мусора',q:1,u:'компл.',p:18000},{n:'Грунтование основания',q:floorA+wallA,u:'м²',p:120},cap&&{n:'Гидроизоляция мокрых зон',q:bathA+(S.rooms.some(r=>r.type==='kitchen')?2:0),u:'м²',p:1400}]);
+  if(cap)grp('Черновые работы',[{n:'Стяжка пола',q:floorA,u:'м²',p:950},{n:'Штукатурка стен по маякам',q:wallA,u:'м²',p:780}]);
+  grp('Электрика',cap?[{n:'Электромонтаж, точки',q:points,u:'шт.',p:1900},{n:'Сборка электрощита',q:1,u:'шт.',p:28000},{n:'Монтаж светильников',q:spots,u:'шт.',p:650}]:[{n:'Замена розеток и выключателей',q:points,u:'шт.',p:350},{n:'Монтаж светильников',q:spots,u:'шт.',p:650}]);
+  grp('Сантехника',cap?[{n:'Разводка водоснабжения и канализации',q:1,u:'компл.',p:24000},{n:'Подключение приборов',q:wet,u:'шт.',p:7500}]:[{n:'Установка приборов',q:wet,u:'шт.',p:3500}]);
+  const fr=[];['wall','floor','ceil'].forEach(g=>Object.entries(agg[g]).forEach(([key,q])=>fr.push({n:({wall:'Стены',floor:'Пол',ceil:'Потолок'})[g]+': '+FIN[g][key].n.toLowerCase(),q,u:'м²',p:FIN[g][key].w})));
+  grp('Отделка',fr);
+  grp('Двери',[{n:'Установка межкомнатных дверей',q:doors,u:'шт.',p:6500}]);
+  let works=W.reduce((s,g)=>s+g.rows.reduce((a,x)=>a+x.q*x.p,0),0);
+  if(o.works==='turnkey'){const t=[{n:'Сборка и установка мебели',q:1,u:'компл.',p:furn*.06},{n:'Финальный клининг',q:o.area||floorA,u:'м²',p:250},{n:'Управление проектом и закупками',q:1,u:'компл.',p:works*.07}];grp('Под ключ',t);works+=t.reduce((s,x)=>s+x.q*x.p,0)}
+  W.forEach(g=>g.sum=g.rows.reduce((a,x)=>a+x.q*x.p,0));
+  const M=[];
+  ['wall','floor','ceil'].forEach(g=>Object.entries(agg[g]).forEach(([key,q])=>M.push({n:FIN[g][key].n+' — материал, класс «'+CLS[o.cls].n.toLowerCase()+'»',q,u:'м²',p:FIN[g][key].m*k})));
+  if(cap){M.push({n:'Черновые смеси (стяжка, штукатурка)',q:floorA,u:'м²',p:480+wallA/floorA*300});M.push({n:'Кабель, щит, автоматика',q:1,u:'компл.',p:22000+points*850});M.push({n:'Трубы, фитинги, коллектор',q:1,u:'компл.',p:32000+wet*2600})}
+  M.push({n:'Межкомнатные двери с фурнитурой',q:doors,u:'шт.',p:CLS[o.cls].door});
+  M.push({n:'Светильники',q:spots,u:'шт.',p:1600*Math.max(.8,k)});
+  const mat=M.reduce((s,x)=>s+x.q*x.p,0);
+  const total=works+mat+furn;
+  const comp=completeness();const u=.05+(1-comp.v)*.3;
+  const c={W,M,spec,lays,works,mat,furn,total,lo:total*(1-u*.6),hi:total*(1+u),u,comp,floorA,wallA,points,wet,doors,spots,ms:0};
+  c.ms=performance.now()-t0;return c;
+}
+function completeness(){
+  const o=S.object,parts=[];
+  parts.push(['Параметры объекта',o.area>=15&&o.height>=2.4&&o.height<=4.5?1:0,.2]);
+  parts.push(['Размеры всех помещений',S.rooms.length&&S.rooms.every(roomOk)?1:0,.2]);
+  const drawing=S.files.some(f=>f.status==='ok'&&DRAW.includes(f.ext)&&f.recog==='applied');
+  parts.push(['Чертёж с распознанными размерами',drawing?1:0,.25]);
+  const wetR=S.rooms.filter(r=>['kitchen','bath'].includes(r.type));
+  const ph=wetR.filter(r=>S.files.some(f=>f.status==='ok'&&f.room===r.id&&!DRAW.includes(f.ext))).length;
+  parts.push(['Фото мокрых зон',wetR.length?ph/wetR.length:1,.15]);
+  parts.push(['Ограничения',(Object.values(S.keep).some(Boolean)||S.avoid.trim())?1:0,.1]);
+  parts.push(['Стиль и бюджет',o.style&&o.budgetMax>0?1:0,.1]);
+  return{v:parts.reduce((s,p)=>s+p[1]*p[2],0),parts};
+}
+
+/* ===================== Проверки ===================== */
+function validate(){
+  const o=S.object,v={},g=[];
+  const rng=(key,val,min,max,soft)=>{if(val==null||isNaN(val))v[key]={l:'bad',m:'Заполните поле'};else if(val<min||val>max)v[key]={l:'bad',m:`Допустимо ${dec(min)}–${dec(max)}`};else if(soft&&(val<soft[0]||val>soft[1]))v[key]={l:'warn',m:soft[2]}};
+  rng('o:area',o.area,15,500,[25,300,'Нетипичная площадь — проверьте']);
+  rng('o:height',o.height,2.4,4.5,[2.5,3.6,'Нетипично для монолита — проверьте по чертежу']);
+  rng('o:people',o.people,1,12);
+  if(o.budgetMin>o.budgetMax)v['o:budgetMax']={l:'bad',m:'Верхняя граница меньше нижней'};
+  S.rooms.forEach(r=>{
+    rng('r:'+r.id+':w',r.w,.8,15,[1.2,9,'Проверьте размер']);rng('r:'+r.id+':l',r.l,.8,15,[1.2,9,'Проверьте размер']);
+  });
+  const sum=S.rooms.filter(roomOk).reduce((s,r)=>s+r.w*r.l,0);
+  if(o.area>0&&sum>0){const d=(sum-o.area)/o.area;if(d>0.02)g.push({l:'bad',m:`Сумма площадей помещений (${m2(sum)}) больше площади объекта (${m2(o.area)})`});else if(d<-0.15)g.push({l:'warn',m:`Помещения покрывают ${Math.round(sum/o.area*100)}% площади. Добавьте коридор, лоджию или кладовую`})}
+  return{v,g,sum};
+}
+function practical(c){
+  const out=[],K=S.rooms.find(r=>r.type==='kitchen'),B=S.rooms.find(r=>r.type==='bath');
+  const iss=Object.values(c.lays).flatMap(l=>l.issues);
+  const has=(r,slot)=>r&&c.lays[r.id]&&c.lays[r.id].items.some(i=>i.slot===slot);
+  const badSlot=(r,slot)=>r&&c.lays[r.id]&&c.lays[r.id].items.some(i=>i.slot===slot&&i.bad);
+  if(K){
+    out.push({k:'Место для холодильника',s:has(K,'fridge')?(badSlot(K,'fridge')?'bad':'ok'):'bad',d:has(K,'fridge')?optObj('kitchen','fridge',selIdx(K,'fridge')).n:'Холодильник не запланирован'});
+    out.push({k:'Мойка',s:has(K,'sink')?(K.pl?'ok':'bad'):'bad',d:!has(K,'sink')?'Мойка не запланирована':K.pl?'Подвод воды отмечен':'Нет сантехники в кухне — уточните стояк'});
+    out.push({k:'Варочная панель и вытяжка',s:has(K,'hob')&&has(K,'hood')?(K.ve?'ok':'warn'):'bad',d:!has(K,'hob')?'Варочная не выбрана':!has(K,'hood')?'Нет вытяжки над варочной':K.ve?'Вентканал есть':'Вентканал не отмечен — только рециркуляция'});
+    const L=c.lays[K.id],closed=L?L.items.filter(i=>['storage','sink','dw','hob'].includes(i.slot)).reduce((s,i)=>s+i.w,0):0;
+    out.push({k:'Закрытые шкафы на кухне',s:has(K,'storage')&&closed>=180?'ok':has(K,'storage')?'warn':'bad',d:`Закрытых нижних модулей ${closed} см, рекомендуем от 180`});
+  }
+  if(B&&has(B,'washer'))out.push({k:'Стиральная машина у коммуникаций',s:B.pl?'ok':'bad',d:B.pl?'Санузел с подводом воды':'В санузле не отмечена сантехника'});
+  const pass=iss.filter(i=>/проход|подход|обход/.test(i.msg));
+  out.push({k:'Свободные проходы',s:pass.length?'bad':'ok',d:pass.length?pass.map(i=>i.msg).join('; '):'Во всех помещениях проходы в норме'});
+  const fit=iss.filter(i=>/не хватает|не помещается|до ТВ/.test(i.msg));
+  if(fit.length)out.push({k:'Габариты',s:'bad',d:fit.map(i=>i.msg).join('; ')});
+  const store=S.rooms.reduce((s,r)=>{const l=c.lays[r.id];return s+(l?l.items.filter(i=>['wardrobe','hw','storage'].includes(i.slot)&&r.type!=='kitchen').reduce((a,i)=>a+i.w,0):0)},0);
+  const need=(S.object.people||1)*80;
+  out.push({k:'Достаточно ли хранения',s:store>=need?'ok':'warn',d:`Шкафов и стеллажей ${store} см на ${S.object.people||1} чел., норма от ${need} см`});
+  const bmax=S.object.budgetMax*1e6;
+  out.push({k:'Укладывается в бюджет',s:c.total<=bmax?'ok':'warn',d:c.total<=bmax?`Запас ${mln(bmax-c.total)}`:`Превышение на ${mln(c.total-bmax)}. Попробуйте класс «Эконом» или фасады ЛДСП`});
+  return out;
+}
+function clarifications(){
+  const a=[];
+  if(!S.files.some(f=>DRAW.includes(f.ext)&&f.status==='ok'))a.push({m:'Нет чертежа. Загрузите планировку застройщика или обмерный план (PDF, DWG, DXF), иначе размеры остаются ручными.',go:'files'});
+  S.rooms.filter(r=>['kitchen','bath'].includes(r.type)).forEach(r=>{if(!S.files.some(f=>f.room===r.id&&f.status==='ok'&&!DRAW.includes(f.ext)))a.push({m:`${r.name}: добавьте фото стояков и вентканала, чтобы привязать сантехнику.`,go:'files'})});
+  S.rooms.filter(r=>r.type==='bedroom'&&!r.win).forEach(r=>a.push({m:`${r.name} без окна? Проверьте анкету.`,go:'form'}));
+  const K=S.rooms.find(r=>r.type==='kitchen');if(K&&!K.ve)a.push({m:'Кухня: есть ли вентканал для вытяжки? Без него только рециркуляция.',go:'form'});
+  if(!S.rooms.some(r=>r.type==='kitchen'))a.push({m:'В анкете нет кухни. Это осознанно (студия, кухня-гостиная)?',go:'form'});
+  return a;
+}
+
+/* ===================== Рендер ===================== */
+let C=null;
+function render(){
+  C=compute();
+  $('#steps').innerHTML=STEPS.map(([id,n],i)=>`<button class="step" type="button" data-step="${id}" aria-current="${S.ui.step===id}"><span class="n">${i+1}</span>${n}${id==='tz'&&!S.confirmed?' <span class="lock" aria-label="заблокировано">⊘</span>':''}</button>`).join('');
+  const pill=$('#statusPill');
+  if(S.confirmed){pill.className='pill ok';pill.textContent='Проект подтверждён'}else if(FLASH){pill.className='pill warn';pill.textContent='Нужно повторное подтверждение'}else{pill.className='pill draft';pill.textContent='Черновик'}
+  const nRooms=S.rooms.filter(r=>['living','bedroom'].includes(r.type)).length;
+  $('#projName').textContent=`Квартира 87 · ${nRooms}-комн., ${m2(S.object.area||0)} · пример`;
+  ({form:renderForm,files:renderFiles,plan:renderPlan,viz:renderViz,smeta:renderSmeta,tz:renderTZ})[S.ui.step]();
+  renderCost();
+  save();
+}
+function refresh(){ // лёгкое обновление без перерисовки формы
+  const before=S.confirmed;
+  if(S.confirmed&&S.confirmed.sig!==sig()){S.confirmed=null;FLASH='Проект изменён после подтверждения. Стоимость пересчитана, подтвердите проект заново.'}
+  C=compute();renderCost(true);applyValidation();save();
+  if(before&&!S.confirmed){render()}
+}
+function changed(){ // структурное изменение
+  if(S.confirmed&&S.confirmed.sig!==sig()){S.confirmed=null;FLASH='Проект изменён после подтверждения. Стоимость пересчитана, подтвердите проект заново.'}
+  render();
+}
+
+function renderCost(flash){
+  const c=C,o=S.object,bmax=o.budgetMax*1e6,pct=Math.min(100,c.total/bmax*100);
+  const st=S.confirmed?`<span class="pill ok">Подтверждено ${esc(S.confirmed.at)}</span>`:FLASH?'<span class="pill warn">Требует подтверждения</span>':'<span class="pill draft">Не подтверждено</span>';
+  $('#cost').className='cost'+(S.ui.mobOpen?' open':'');
+  $('#cost').innerHTML=`
+  <button class="mob-cost" type="button" id="mobToggle" aria-expanded="${S.ui.mobOpen}"><span><small class="muted">Итого, вилка</small><br><span class="total-big num">${mln(c.lo)} – ${mln(c.hi)}</span></span><span class="muted">${S.ui.mobOpen?'Свернуть':'Детали'}</span></button>
+  <div class="card ${flash?'flash':''}">
+    <h2>Стоимость проекта</h2>
+    <div style="margin-top:10px">
+      <div class="cline"><span>Работы</span><span class="v">${rub(c.works)}</span></div>
+      <div class="cline"><span>Материалы</span><span class="v">${rub(c.mat)}</span></div>
+      <div class="cline"><span>Мебель и техника</span><span class="v">${rub(c.furn)}</span></div>
+    </div>
+    <div class="grand">
+      <small class="muted">Итого</small>
+      <div class="total-big num">${mln(c.total)}</div>
+      <small class="muted num">вилка ${mln(c.lo)} – ${mln(c.hi)} (±${Math.round(c.u*100)}%)</small>
+    </div>
+  </div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><small>Бюджет до ${mln(bmax)}</small><small class="num">${Math.round(c.total/bmax*100)}%</small></div>
+    <div class="meter budget ${c.total>bmax?'over':''}"><i style="width:${pct}%"></i></div>
+    <div class="row" style="justify-content:space-between;margin-top:8px"><small>Полнота данных</small><small class="num">${Math.round(c.comp.v*100)}%</small></div>
+    <div class="meter"><i style="width:${c.comp.v*100}%"></i></div>
+    <small class="muted">Чем полнее данные, тем уже вилка. ${c.comp.parts.filter(p=>p[1]<1).map(p=>p[0]).join(', ')||'Все данные собраны.'}</small>
+  </div>
+  <div class="card"><div class="row" style="justify-content:space-between">${st}<small class="muted num">пересчёт ${c.ms<1?'<1':Math.round(c.ms)} мс</small></div></div>`;
+}
+
+function fld(label,key,val,opts={}){
+  const t=opts.type||'number';
+  if(t==='select')return`<label class="field"><span>${label}</span><select data-b="${key}">${Object.entries(opts.items).map(([k,v])=>`<option value="${k}" ${k===val?'selected':''}>${esc(typeof v==='object'?v.n:v)}</option>`).join('')}</select><small class="vmsg" data-v="${key}"></small></label>`;
+  return`<label class="field"><span>${label}</span><input type="${t}" data-b="${key}" value="${esc(val??'')}" ${opts.step?`step="${opts.step}"`:''} ${opts.min!=null?`min="${opts.min}"`:''} inputmode="decimal"><small class="vmsg" data-v="${key}"></small></label>`;
+}
+function seg(name,key,cur,items){return`<div class="seg" role="radiogroup">${Object.entries(items).map(([k,v])=>`<label><input type="radio" name="${name}" data-b="${key}" value="${k}" ${k===cur?'checked':''}><span>${esc(typeof v==='object'?v.n:v)}</span></label>`).join('')}</div>`}
+
+function renderForm(){
+  const o=S.object,val=validate();
+  $('#main').innerHTML=`
+  ${banner()}
+  <section class="card">
+    <div class="sec-h"><span class="idx">1.1</span><h2>Объект</h2></div>
+    <div class="grid">
+      ${fld('Тип объекта','o:type',o.type,{type:'select',items:OBJ})}
+      ${fld('Общая площадь, м²','o:area',o.area,{step:.1})}
+      ${fld('Высота потолков, м','o:height',o.height,{step:.01})}
+      ${fld('Сколько человек живёт','o:people',o.people,{step:1})}
+      ${fld('Стиль','o:style',o.style,{type:'select',items:STYLES})}
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <div class="field"><span>Тип ремонта</span>${seg('works','o:works',o.works,WORKS)}</div>
+      <div class="field"><span>Класс материалов</span>${seg('cls','o:cls',o.cls,CLS)}</div>
+      <div class="field"><span>Бюджет, млн ₽</span><div class="row" style="flex-wrap:nowrap"><input class="inp" type="number" step="0.1" data-b="o:budgetMin" value="${o.budgetMin}" aria-label="Бюджет от"><span class="muted">–</span><input class="inp" type="number" step="0.1" data-b="o:budgetMax" value="${o.budgetMax}" aria-label="Бюджет до"></div><small class="vmsg" data-v="o:budgetMax"></small></div>
+    </div>
+  </section>
+  <section class="card">
+    <div class="sec-h"><span class="idx">1.2</span><h2>Помещения</h2><span class="muted" id="roomSum"></span></div>
+    <div id="globalWarn"></div>
+    <div class="rooms">${S.rooms.map(roomCard).join('')}</div>
+    <div class="row" style="margin-top:12px"><select class="inp" id="newType" style="width:auto">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><button class="btn" type="button" data-act="addRoom">+ Добавить помещение</button></div>
+  </section>
+  <section class="card">
+    <div class="sec-h"><span class="idx">1.3</span><h2>Функциональные зоны</h2></div>
+    <p class="lead" style="margin:-6px 0 8px">Отметьте обязательную комплектацию. Модели и размеры подберём на плане.</p>
+    ${S.rooms.filter(r=>(SLOTS[r.type]||[]).length).map(r=>`<div class="zone"><h3>${esc(r.name)}</h3><div class="chips">
+      ${(SLOTS[r.type]).map(([s,l])=>`<label class="chip"><input type="checkbox" data-b="q:${r.id}.${s}" ${isOn(r,s)?'checked':''}>${l}</label>`).join('')}
+      ${r.type==='kitchen'?`<label class="chip" style="cursor:default">Планировка <select data-b="klay" class="inp" style="width:auto;padding:2px 6px">${Object.entries(KLAY).map(([k,v])=>`<option value="${k}" ${k===S.klay?'selected':''}>${v}</option>`).join('')}</select></label>`:''}
+    </div></div>`).join('')}
+  </section>
+  <section class="card">
+    <div class="sec-h"><span class="idx">1.4</span><h2>Ограничения</h2></div>
+    <div class="field"><span>Что сохранить</span><div class="chips">
+      ${[['windows','Окна'],['entry','Входную дверь'],['radiators','Радиаторы'],['risers','Стояки и сантехнику застройщика']].map(([k,l])=>`<label class="chip"><input type="checkbox" data-b="k:${k}" ${S.keep[k]?'checked':''}>${l}</label>`).join('')}
+    </div></div>
+    <label class="field" style="margin-top:12px"><span>Чего избегать</span><textarea data-b="avoid" rows="2">${esc(S.avoid)}</textarea></label>
+  </section>
+  <div class="next"><span></span><button class="btn primary big" type="button" data-step="files">Далее: файлы →</button></div>`;
+  applyValidation();
+}
+function roomCard(r){
+  const opt=(g,cur)=>Object.entries(FIN[g]).map(([k,v])=>`<option value="${k}" ${k===cur?'selected':''}>${v.n}</option>`).join('');
+  const P='r:'+r.id+':';
+  return`<div class="room">
+    <div class="top"><input class="inp" data-b="${P}name" value="${esc(r.name)}" aria-label="Название"><select class="inp" data-b="${P}type" style="width:auto">${Object.entries(TYPES).map(([k,v])=>`<option value="${k}" ${k===r.type?'selected':''}>${v}</option>`).join('')}</select><button class="btn ghost sm" type="button" data-act="delRoom" data-id="${r.id}" aria-label="Удалить ${esc(r.name)}">✕</button></div>
+    <div class="g3">${fld('Ширина, м',P+'w',r.w,{step:.05})}${fld('Длина, м',P+'l',r.l,{step:.05})}<div class="field"><span>Площадь</span><span class="area" data-area="${r.id}" style="padding-top:8px">${roomOk(r)?m2(r.w*r.l):'—'}</span></div></div>
+    <div class="g3">${fld('Окна',P+'win',r.win,{step:1,min:0})}${fld('Двери',P+'doors',r.doors,{step:1,min:0})}<span></span></div>
+    <div class="comms">${[['el','Электрика'],['pl','Сантехника'],['ve','Вентиляция']].map(([k,l])=>`<label class="chip"><input type="checkbox" data-b="${P}${k}" ${r[k]?'checked':''}>${l}</label>`).join('')}</div>
+    <div class="g3">
+      <label class="field"><span>Стены</span><select data-b="${P}wall">${opt('wall',r.wall)}</select></label>
+      <label class="field"><span>Пол</span><select data-b="${P}floor">${opt('floor',r.floor)}</select></label>
+      <label class="field"><span>Потолок</span><select data-b="${P}ceil">${opt('ceil',r.ceil)}</select></label>
+    </div></div>`;
+}
+function applyValidation(){
+  const val=validate();
+  document.querySelectorAll('[data-v]').forEach(el=>{const x=val.v[el.dataset.v];el.className='vmsg'+(x?' '+x.l:'');el.textContent=x?x.m:'';const inp=el.parentElement.querySelector('input');if(inp)inp.classList.toggle('bad',!!x&&x.l==='bad')});
+  const gw=$('#globalWarn');if(gw)gw.innerHTML=val.g.map(x=>`<div class="banner ${x.l==='bad'?'warn':'info'}" style="margin-bottom:10px">${esc(x.m)}</div>`).join('');
+  const rs=$('#roomSum');if(rs)rs.textContent=`сумма ${m2(val.sum)} из ${m2(S.object.area||0)}`;
+  S.rooms.forEach(r=>{const a=document.querySelector(`[data-area="${r.id}"]`);if(a)a.textContent=roomOk(r)?m2(r.w*r.l):'—'});
+}
+function banner(){
+  if(FLASH&&!S.confirmed)return`<div class="banner warn">${esc(FLASH)} <button class="btn sm" type="button" data-step="viz">К визуализации</button></div>`;
+  return'';
+}
+
+/* ---------- Файлы ---------- */
+function renderFiles(){
+  const opts=f=>`<option value="all" ${f.room==='all'?'selected':''}>Вся квартира</option>`+S.rooms.map(r=>`<option value="${r.id}" ${f.room===r.id?'selected':''}>${esc(r.name)}</option>`).join('');
+  const recog=S.files.filter(f=>f.recog==='ready');
+  $('#main').innerHTML=`${banner()}
+  <section class="card">
+    <div class="sec-h"><h2>Фото и чертежи</h2></div>
+    <p class="lead" style="margin:-6px 0 12px">Планировка застройщика или обмерный план даст точные размеры. Фото стояков и вентканалов нужны для кухни и санузла.</p>
+    <label class="drop" id="drop"><input type="file" id="fileIn" multiple accept=".jpg,.jpeg,.png,.pdf,.dwg,.dxf,.heic">
+      <b>Перетащите файлы или нажмите, чтобы выбрать</b>
+      <small class="muted">JPG, PNG, HEIC, PDF, DWG, DXF · до ${MAXMB} МБ на файл</small></label>
+  </section>
+  ${recog.map(f=>`<section class="recog">
+    <div class="row"><b>${esc(f.name)}</b><span class="muted">распознаны размеры, проверьте перед применением</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Помещение</th><th>В анкете, м</th><th>На чертеже: ширина</th><th>длина</th></tr></thead><tbody>
+    ${f.det.map((d,i)=>{const r=S.rooms.find(x=>x.id===d.id);return r?`<tr><td>${esc(r.name)}</td><td class="mono muted">${dec(r.w)} × ${dec(r.l)}</td><td><input class="inp" type="number" step="0.01" data-det="${f.id}:${i}:w" value="${d.w}" aria-label="Ширина ${esc(r.name)}"></td><td><input class="inp" type="number" step="0.01" data-det="${f.id}:${i}:l" value="${d.l}" aria-label="Длина ${esc(r.name)}"></td></tr>`:''}).join('')}
+    </tbody></table></div>
+    <div class="row"><button class="btn primary" type="button" data-act="applyRecog" data-id="${f.id}">Применить размеры</button><button class="btn ghost" type="button" data-act="skipRecog" data-id="${f.id}">Оставить размеры из анкеты</button></div>
+  </section>`).join('')}
+  <section class="card">
+    <div class="sec-h"><h2>Загружено</h2><span class="muted">${S.files.length} файл(ов)</span></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>Файл</th><th>Размер</th><th>Помещение</th><th>Проверка</th><th></th></tr></thead>
+      <tbody>${S.files.map(f=>`<tr>
+        <td><div class="fname"><span class="thumb">${BLOBS[f.id]?`<img src="${BLOBS[f.id]}" alt="Превью ${esc(f.name)}">`:esc(f.ext.toUpperCase())}</span><span style="min-width:0;word-break:break-all">${esc(f.name)}</span></div></td>
+        <td class="mono">${(f.size/1048576).toFixed(1)} МБ</td>
+        <td><select class="inp" data-froom="${f.id}" style="width:auto" ${f.status==='bad'?'disabled':''}>${opts(f)}</select></td>
+        <td><span class="st ${f.status}">${f.status==='ok'?'✓ ':f.status==='bad'?'✕ ':''}${esc(f.note)}</span>${f.status==='proc'?`<div class="bar"><i style="width:${f.prog||10}%"></i></div>`:''}</td>
+        <td><button class="btn ghost sm" type="button" data-act="delFile" data-id="${f.id}" aria-label="Удалить файл">✕</button></td>
+      </tr>`).join('')}</tbody></table></div>
+  </section>
+  <div class="next"><button class="btn" type="button" data-step="form">← Анкета</button><button class="btn primary big" type="button" data-step="plan">Сформировать проект →</button></div>`;
+  const drop=$('#drop');
+  ['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('over')}));
+  ['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('over')}));
+  drop.addEventListener('drop',ev=>handleFiles(ev.dataTransfer.files));
+  $('#fileIn').addEventListener('change',ev=>handleFiles(ev.target.files));
+}
+async function handleFiles(list){
+  for(const file of list){
+    const ext=(file.name.split('.').pop()||'').toLowerCase();
+    const f={id:'f'+Date.now()+Math.random().toString(36).slice(2,6),name:file.name,ext,size:file.size,room:guessRoom(file.name),status:'proc',note:'Проверяем файл…',prog:20};
+    S.files.push(f);
+    if(!ACCEPT.includes(ext)){Object.assign(f,{status:'bad',note:`Формат .${ext} не поддерживается`});continue}
+    if(file.size===0){Object.assign(f,{status:'bad',note:'Пустой файл'});continue}
+    if(file.size>MAXMB*1048576){Object.assign(f,{status:'bad',note:`Больше ${MAXMB} МБ`});continue}
+    const head=new Uint8Array(await file.slice(0,2048).arrayBuffer());
+    const txt=String.fromCharCode(...head.slice(0,2048));
+    const okSig={jpg:head[0]===0xFF&&head[1]===0xD8,jpeg:head[0]===0xFF&&head[1]===0xD8,png:head[0]===0x89&&txt.slice(1,4)==='PNG',pdf:txt.startsWith('%PDF'),dwg:txt.startsWith('AC10'),dxf:/SECTION/.test(txt),heic:txt.slice(4,8)==='ftyp'}[ext];
+    if(!okSig){Object.assign(f,{status:'bad',note:'Файл повреждён или не соответствует расширению'});continue}
+    if(['jpg','jpeg','png'].includes(ext)){
+      const url=URL.createObjectURL(file);
+      const dims=await new Promise(res=>{const im=new Image();im.onload=()=>res([im.naturalWidth,im.naturalHeight]);im.onerror=()=>res(null);im.src=url});
+      if(!dims){Object.assign(f,{status:'bad',note:'Изображение не читается'});continue}
+      BLOBS[f.id]=url;
+      Object.assign(f,{status:dims[0]<800?'bad':'ok',note:dims[0]<800?`Слишком мелкое фото (${dims[0]}×${dims[1]}), нужно от 800 px`:`Фото читается, ${dims[0]}×${dims[1]}`});
+    }else if(ext==='heic'){Object.assign(f,{status:'ok',note:'HEIC принят, конвертация на сервере'})}
+    else{f.note='Распознаём размеры на чертеже…';f.prog=35;simulateRecog(f.id)}
+  }
+  changed();
+}
+function guessRoom(name){const n=name.toLowerCase();const map=[['kuh','kitchen'],['кух','kitchen'],['van','bath'],['san','bath'],['сан','bath'],['ван','bath'],['spal','bedroom'],['спал','bedroom'],['gost','living'],['гост','living'],['prih','hall'],['прих','hall']];const m=map.find(([k])=>n.includes(k));const r=m&&S.rooms.find(r=>r.type===m[1]);return r?r.id:'all'}
+function simulateRecog(id){
+  let p=35;const tick=setInterval(()=>{const f=S.files.find(x=>x.id===id);if(!f){clearInterval(tick);return}
+    p+=20;f.prog=p;
+    if(p>=100){clearInterval(tick);const jit=v=>Math.round((v+(Math.random()-.5)*.16)*100)/100;
+      Object.assign(f,{status:'ok',recog:'ready',note:`Чертёж распознан: ${S.rooms.length} помещ.`,det:S.rooms.map(r=>({id:r.id,w:jit(r.w),l:jit(r.l)}))});}
+    if(S.ui.step==='files')render();
+  },450);
+}
+
+/* ---------- План ---------- */
+function pack(){
+  const gap=50,tot=S.rooms.filter(roomOk).reduce((s,r)=>s+r.w*r.l,0);
+  const target=Math.max(Math.sqrt(tot)*150,...S.rooms.filter(roomOk).map(r=>r.w*100));
+  let x=0,y=0,rowH=0,maxX=0;const pos={};
+  S.rooms.filter(roomOk).forEach(r=>{const W=r.w*100,L=r.l*100;if(x>0&&x+W>target){x=0;y+=rowH+gap+30;rowH=0}pos[r.id]={x,y};x+=W+gap;rowH=Math.max(rowH,L);maxX=Math.max(maxX,x-gap)});
+  return{pos,w:maxX,h:y+rowH};
+}
+function planSVG(interactive){
+  const p=pack(),pad=60;
+  let s=`<svg class="plan-svg" viewBox="${-pad} ${-pad} ${p.w+pad*2} ${p.h+pad*2}" role="img" aria-label="2D-план: ${S.rooms.map(r=>esc(r.name)).join(', ')}">`;
+  S.rooms.filter(roomOk).forEach(r=>{
+    const {x,y}=p.pos[r.id],lay=C.lays[r.id];
+    s+=`<g transform="translate(${x},${y})">`;
+    s+=`<rect class="room-r ${interactive&&S.ui.planRoom===r.id?'sel':''}" x="0" y="0" width="${lay.W}" height="${lay.L}" data-room="${r.id}"/>`;
+    for(let i=0;i<r.win;i++){const seg=Math.min(140,lay.L/(r.win+1));const cy=lay.L/(r.win+1)*(i+1);s+=`<line class="win" x1="${lay.W}" y1="${cy-seg/2}" x2="${lay.W}" y2="${cy+seg/2}"/>`}
+    if(r.doors){const dx=Math.min(lay.W-50,Math.max(10,lay.W*.65));s+=`<line class="door" x1="${dx}" y1="${lay.L}" x2="${Math.min(lay.W-6,dx+80)}" y2="${lay.L}"/>`}
+    lay.items.filter(i=>i.wall!=='none').forEach(it=>{
+      s+=`<rect class="it ${it.bad?'bad':''} ${S.ui.pick&&S.ui.pick.rid===r.id&&S.ui.pick.slot===it.slot?'pick':''}" x="${it.x}" y="${it.y}" width="${it.rw}" height="${it.rh}" rx="3" ${interactive?`data-pick="${r.id}|${it.slot}" tabindex="0" role="button" aria-label="${esc(it.n)}"`:''}><title>${esc(it.n)} · ${it.w}×${it.d} см</title></rect>`;
+      const lbl=it.label.split(' ')[0];if(Math.max(it.rw,it.rh)>=50)s+=`<text class="itl" x="${it.x+it.rw/2}" y="${it.y+it.rh/2+5}" text-anchor="middle" ${it.rh>it.rw*1.4?`transform="rotate(-90 ${it.x+it.rw/2} ${it.y+it.rh/2})"`:''}>${esc(lbl.length>11?lbl.slice(0,10)+'.':lbl)}</text>`;
+    });
+    const cx=lay.lD+lay.fW/2,cy=lay.tD+lay.fL/2;
+    const centerItem=lay.items.find(i=>i.wall==='center');
+    const ly=centerItem?Math.max(lay.tD+40,centerItem.y-30):cy;
+    s+=`<text class="lbl" x="${cx}" y="${ly}" text-anchor="middle">${esc(r.name)}</text><text class="sub" x="${cx}" y="${ly+24}" text-anchor="middle">${m2(r.w*r.l)}</text>`;
+    s+=`<text class="dim" x="${lay.W/2}" y="-14" text-anchor="middle">${Math.round(lay.W)}</text><text class="dim" x="-14" y="${lay.L/2}" text-anchor="middle" transform="rotate(-90 -14 ${lay.L/2})">${Math.round(lay.L)}</text>`;
+    s+=`</g>`;
+  });
+  return s+'</svg>';
+}
+function renderPlan(){
+  const valid=S.rooms.filter(roomOk);
+  if(!valid.find(r=>r.id===S.ui.planRoom))S.ui.planRoom=valid[0]&&valid[0].id;
+  const r=S.rooms.find(x=>x.id===S.ui.planRoom),lay=r&&C.lays[r.id];
+  const checks=practical(C),asks=clarifications();
+  const finishes=r?[['Стены',FIN.wall[r.wall].n,m2(Math.max(0,2*(r.w+r.l)*S.object.height-r.win*2.2-r.doors*1.9))],['Пол',FIN.floor[r.floor].n,m2(r.w*r.l)],['Потолок',FIN.ceil[r.ceil].n,m2(r.w*r.l)],['Свет','Точечные светильники',Math.max(2,Math.ceil(r.w*r.l/2.4))+' шт.']]:[];
+  const extra=C.spec.filter(s=>r&&s.rid===r.id&&s.slot.startsWith('_'));
+  $('#main').innerHTML=`${banner()}
+  <div class="plan-layout">
+    <section class="card" style="min-width:0">
+      <div class="sec-h"><h2>Предварительный 2D-план</h2><span class="muted">сформирован за ${C.ms<1?'<1':Math.round(C.ms)} мс · размеры в см</span></div>
+      ${planSVG(true)}
+      <div class="legend" style="margin-top:10px"><span><i style="background:var(--plan-item);border:1.5px solid var(--accent)"></i>Мебель и техника — нажмите, чтобы заменить</span><span><i style="background:var(--bad-soft);border:1.5px solid var(--bad)"></i>Конфликт габаритов</span><span><i style="background:var(--accent)"></i>Окно</span></div>
+    </section>
+    <div class="side-col">
+      <section class="card">
+        <div class="sec-h" style="margin-bottom:8px"><h2>Комплектация</h2></div>
+        <div class="tabs" style="margin-bottom:8px">${valid.map(x=>`<button class="tab" type="button" data-proom="${x.id}" aria-pressed="${x.id===S.ui.planRoom}">${esc(x.name)}</button>`).join('')}</div>
+        <div class="items">${lay?lay.items.map(it=>itemRow(r,it,lay)).join('')+extra.map(e=>`<div class="item"><div><div class="cat">${esc(e.cat)}</div><div class="nm">${esc(e.n)}</div><div class="meta">${esc(e.dim)} · пересчитывается по длине кухни</div></div><div class="pr">${rub(e.p)}</div></div>`).join(''):'<p class="muted">Укажите размеры помещения в анкете.</p>'}
+        ${finishes.map(f=>`<div class="item"><div><div class="cat">${f[0]}</div><div class="nm">${esc(f[1])}</div></div><div class="pr muted">${f[2]}</div></div>`).join('')}</div>
+      </section>
+      <section class="card">
+        <div class="sec-h" style="margin-bottom:6px"><h2>Чек-лист практичности</h2><span class="muted">${checks.filter(c=>c.s==='ok').length} из ${checks.length}</span></div>
+        <div class="check">${checks.map(c=>`<div class="ck ${c.s}"><span class="ic">${c.s==='ok'?'✓':c.s==='bad'?'!':'?'}</span><div><b>${esc(c.k)}</b><small>${esc(c.d)}</small></div></div>`).join('')}</div>
+      </section>
+      ${asks.length?`<section class="card"><div class="sec-h" style="margin-bottom:4px"><h2>Нужны уточнения</h2><span class="muted">${asks.length}</span></div>${asks.map(a=>`<div class="ask"><p>${esc(a.m)}</p><button class="btn sm" type="button" data-step="${a.go}">Уточнить</button></div>`).join('')}</section>`:''}
+    </div>
+  </div>
+  <div class="next"><button class="btn" type="button" data-step="files">← Файлы</button><button class="btn primary big" type="button" data-step="viz">К визуализации →</button></div>`;
+}
+function itemRow(r,it,lay){
+  const open=S.ui.pick&&S.ui.pick.rid===r.id&&S.ui.pick.slot===it.slot;
+  let alts='';
+  if(open){
+    const all=OPT[r.type+'.'+it.slot];
+    const baseIss=lay.issues.length;
+    const maxW=it.wall==='none'||it.wall==='center'?null:it.w+Math.max(0,it.free);
+    alts=`<div class="alts"><div class="hd">${maxW?`Посадочное место: до <b class="mono">${Math.round(maxW)} см</b> по ширине. `:''}Показаны все варианты, неподходящие отмечены.</div>
+    ${all.map((a,i)=>{const L2=layout(r,{slot:it.slot,i});const mine=L2.issues.filter(x=>x.slot===it.slot||L2.issues.length>baseIss);const o=optObj(r.type,it.slot,i);const fits=L2.issues.length<=baseIss&&!L2.items.find(x=>x.slot===it.slot).bad;const d=o.p-it.p;
+      return`<button type="button" class="alt ${i===it.i?'cur':''}" data-alt="${r.id}|${it.slot}|${i}" aria-disabled="${!fits&&i!==it.i}"><span><b>${esc(o.n)}</b><br><span class="meta mono">${o.w?o.w+'×'+o.d+' см':'встраиваемое'}</span></span><span class="pr mono">${rub(o.p)}<br>${i===it.i?'<span class="muted delta">выбрано</span>':`<span class="delta ${d>0?'up':'dn'}">${d>0?'+':'−'}${rub(Math.abs(d))}</span>`}</span><span class="why ${fits?'ok':'bad'}">${i===it.i?'':fits?'Помещается, проходы в норме':esc((mine[0]||L2.issues[0]||{msg:'Не помещается'}).msg)}</span></button>`}).join('')}</div>`;
+  }
+  return`<div class="item ${it.bad?'bad':''}"><div><div class="cat">${esc(it.label)}</div><div class="nm">${esc(it.n)}</div><div class="meta">${it.w?it.w+'×'+it.d+' см':'встраиваемое'}${it.f?' · '+esc(fac().n.toLowerCase()):''}</div></div>
+  <div class="pr">${rub(it.p)}<br><button class="btn sm" type="button" data-pickbtn="${r.id}|${it.slot}" aria-expanded="${open}" style="margin-top:4px">${open?'Скрыть':'Заменить'}</button></div>${alts}</div>`;
+}
+
+/* ---------- Визуализация ---------- */
+const STYLEPAL={
+  scandi:{paint:'#F0EEE9',wallpaper:'#E6E1D8',decor:'#DCD5CA',textile:'#9DA9A2',wood:'#D3B58E'},
+  minimal:{paint:'#F2F2F0',wallpaper:'#E7E6E3',decor:'#D9D8D4',textile:'#B7B4AE',wood:'#CBC3B8'},
+  classic:{paint:'#E8DDCC',wallpaper:'#E0D2BE',decor:'#D6C6AF',textile:'#8E7C6B',wood:'#8D6B4F'},
+  loft:{paint:'#C3C0BA',wallpaper:'#B9B4AC',decor:'#A9A49C',textile:'#6F5545',wood:'#5F4737'}
+};
+const FLOORC={laminate:'#C9A67C',engineered:'#B88C5E',tile:'#D2CEC7',lvt:'#C3AC8C'};
+function shade(hex,f){const n=parseInt(hex.slice(1),16);const c=[n>>16,(n>>8)&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v*f))));return`rgb(${c})`}
+function drawViz(cv,r,bg){
+  const lay=layout(r),W=lay.W,L=lay.L,H=S.object.height*100||270;
+  const dpr=window.devicePixelRatio||1,cw=cv.clientWidth||640,ch=cv.clientHeight||400;
+  cv.width=cw*dpr;cv.height=ch*dpr;const g=cv.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);
+  g.fillStyle=bg;g.fillRect(0,0,cw,ch);
+  const Cs=Math.cos(Math.PI/6),pr=(x,y,z)=>[(x-y)*Cs,(x+y)*.5-z];
+  const pts=[[0,0,H],[W,0,H],[0,L,H],[W,L,0],[W,0,0],[0,L,0]].map(p=>pr(...p));
+  const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  const sc=Math.min((cw-40)/(Math.max(...xs)-Math.min(...xs)),(ch-40)/(Math.max(...ys)-Math.min(...ys)));
+  const ox=(cw-(Math.max(...xs)-Math.min(...xs))*sc)/2-Math.min(...xs)*sc,oy=(ch-(Math.max(...ys)-Math.min(...ys))*sc)/2-Math.min(...ys)*sc;
+  const P=(x,y,z)=>{const p=pr(x,y,z);return[ox+p[0]*sc,oy+p[1]*sc]};
+  const poly=(arr,fill,stroke)=>{g.beginPath();arr.forEach((p,i)=>{const q=P(...p);i?g.lineTo(...q):g.moveTo(...q)});g.closePath();g.fillStyle=fill;g.fill();if(stroke){g.strokeStyle=stroke;g.lineWidth=1;g.stroke()}};
+  const pal=STYLEPAL[S.object.style]||STYLEPAL.scandi,wallC=r.wall==='tile'?'#E6EAEA':pal[r.wall]||pal.paint,floorC=FLOORC[r.floor]||'#C9A67C';
+  poly([[0,0,0],[W,0,0],[W,L,0],[0,L,0]],floorC);
+  g.strokeStyle='rgba(0,0,0,.07)';g.lineWidth=1;
+  const step=r.floor==='tile'?60:20;
+  if(r.floor==='tile'){for(let x=step;x<W;x+=step){g.beginPath();g.moveTo(...P(x,0,0));g.lineTo(...P(x,L,0));g.stroke()}}
+  for(let y=step;y<L;y+=step){g.beginPath();g.moveTo(...P(0,y,0));g.lineTo(...P(W,y,0));g.stroke()}
+  poly([[0,0,0],[W,0,0],[W,0,H],[0,0,H]],shade(wallC.startsWith('#')?wallC:'#E6EAEA',.97));
+  poly([[0,0,0],[0,L,0],[0,L,H],[0,0,H]],shade(wallC.startsWith('#')?wallC:'#E6EAEA',.86));
+  if(r.wall==='tile'){g.strokeStyle='rgba(0,0,0,.08)';for(let z=30;z<H;z+=30){g.beginPath();g.moveTo(...P(0,0,z));g.lineTo(...P(W,0,z));g.lineTo(...P(0,0,z));g.moveTo(...P(0,0,z));g.lineTo(...P(0,L,z));g.stroke()}}
+  if(r.win){const wy=L*.55,ww=Math.min(150,L*.35);poly([[0,wy-ww/2,85],[0,wy+ww/2,85],[0,wy+ww/2,235],[0,wy-ww/2,235]],'#BFD3E6','rgba(0,0,0,.25)');g.strokeStyle='rgba(255,255,255,.7)';g.beginPath();g.moveTo(...P(0,wy,85));g.lineTo(...P(0,wy,235));g.stroke()}
+  const F=fac().c,parts=[];
+  const box=(x0,y0,z0,x1,y1,z1,col)=>parts.push({x0,y0,z0,x1,y1,z1,col});
+  const fronts={fridge:'#DCDEE0',washer:'#F4F4F2',toilet:'#F6F6F4',tub:'#F7F7F5'};
+  lay.items.filter(i=>i.wall!=='none').forEach(it=>{
+    const x0=it.x,y0=it.y,x1=it.x+it.rw,y1=it.y+it.rh;
+    switch(it.slot){
+      case'fridge':box(x0,y0,0,x1,y1,200,it.f?F:fronts.fridge);break;
+      case'oven':box(x0,y0,0,x1,y1,215,F);break;
+      case'storage':if(r.type==='kitchen'){box(x0,y0,0,x1,y1,88,F);box(x0,y0,88,x1,y1,92,'#D9D6D0')}else box(x0,y0,0,x1,y1,200,F);break;
+      case'sink':case'dw':case'hob':box(x0,y0,0,x1,y1,88,F);box(x0,y0,88,x1,y1,92,'#D9D6D0');if(it.slot==='hob')box(x0+6,y0+8,92,x1-6,y1-8,93,'#1E2124');if(it.slot==='sink')box(x0+8,y0+10,92,x1-8,y1-14,92.5,'#9AA0A6');break;
+      case'dining':box(x0,y0,72,x1,y1,76,pal.wood);box(x0+(x1-x0)/2-4,y0+(y1-y0)/2-4,0,x0+(x1-x0)/2+4,y0+(y1-y0)/2+4,72,pal.wood);box(x0+10,y1+8,0,x0+50,y1+48,46,pal.textile);box(x1-50,y0-48,0,x1-10,y0-8,46,pal.textile);break;
+      case'sofa':box(x0,y0,0,x1,y1,42,pal.textile);box(x0,y1-24,42,x1,y1,85,shade(pal.textile,.9));box(x0,y0,42,x0+18,y1,62,shade(pal.textile,.95));box(x1-18,y0,42,x1,y1,62,shade(pal.textile,.95));break;
+      case'tv':box(x0,y0,0,x1,y1,48,F);box(x0+(x1-x0)*.15,y0,110,x1-(x1-x0)*.15,y0+4,180,'#16181A');break;
+      case'table':box(x0,y0,0,x1,y1,40,pal.wood);break;
+      case'bed':box(x0,y0,0,x1,y1,45,'#EDEBE6');box(x0,y0,0,x1,y0+8,110,pal.textile);box(x0+10,y0+12,45,x0+(x1-x0)/2-5,y0+50,58,'#FBFAF8');box(x0+(x1-x0)/2+5,y0+12,45,x1-10,y0+50,58,'#FBFAF8');box(x0,y0+90,45,x1,y1,49,shade(pal.textile,1.15));break;
+      case'wardrobe':case'hw':box(x0,y0,0,x1,y1,240,F);break;
+      case'desk':box(x0,y0,72,x1,y1,76,pal.wood);box(x0+2,y0+2,0,x0+6,y1-2,72,pal.wood);box(x1-6,y0+2,0,x1-2,y1-2,72,pal.wood);break;
+      case'tub':box(x0,y0,0,x1,y1,58,fronts.tub);box(x0+8,y0+8,57,x1-8,y1-8,58.5,'#DCE3E6');break;
+      case'basin':box(x0,y0,30,x1,y1,82,F);box(x0,y0,82,x1,y1,86,'#F7F7F5');break;
+      case'toilet':box(x0+4,y0+10,0,x1-4,y1,40,fronts.toilet);box(x0,y0,0,x1,y0+12,95,'#F0F0EE');break;
+      case'washer':box(x0,y0,0,x1,y1,85,fronts.washer);break;
+      case'cab':box(x0,y0,0,x1,y1,180,F);break;
+      case'bench':box(x0,y0,0,x1,y1,45,pal.wood);break;
+      default:box(x0,y0,0,x1,y1,80,'#CCCCCC');
+    }
+  });
+  if(r.type==='kitchen'){
+    ['top','left','right'].forEach(w=>{const run=lay.items.filter(i=>i.wall===w&&!['fridge','oven'].includes(i.slot));if(!run.length)return;
+      const a=run[0],b=run[run.length-1];
+      if(w==='top')box(a.x,0,150,b.x+b.rw,35,222,F);else if(w==='left')box(0,a.y,150,35,b.y+b.rh,222,F);else box(W-35,a.y,150,W,b.y+b.rh,222,F)});
+  }
+  parts.sort((a,b)=>(a.x0+a.x1+a.y0+a.y1)/2+a.z0*.01-((b.x0+b.x1+b.y0+b.y1)/2+b.z0*.01));
+  parts.forEach(p=>{const c=p.col.startsWith('#')?p.col:'#CCCCCC';const lt=(x)=>p.col.startsWith('rgb')?p.col:shade(c,x);
+    poly([[p.x0,p.y1,p.z0],[p.x1,p.y1,p.z0],[p.x1,p.y1,p.z1],[p.x0,p.y1,p.z1]],lt(.8),'rgba(0,0,0,.18)');
+    poly([[p.x1,p.y0,p.z0],[p.x1,p.y1,p.z0],[p.x1,p.y1,p.z1],[p.x1,p.y0,p.z1]],lt(.9),'rgba(0,0,0,.18)');
+    poly([[p.x0,p.y0,p.z1],[p.x1,p.y0,p.z1],[p.x1,p.y1,p.z1],[p.x0,p.y1,p.z1]],lt(1.02),'rgba(0,0,0,.18)');
+  });
+}
+let renderTimer=null;
+function renderViz(){
+  const valid=S.rooms.filter(roomOk);
+  if(!valid.find(r=>r.id===S.ui.vizRoom))S.ui.vizRoom=valid[0]&&valid[0].id;
+  const r=S.rooms.find(x=>x.id===S.ui.vizRoom),hasK=S.rooms.some(x=>x.type==='kitchen');
+  const lay=r&&C.lays[r.id];
+  const alt=r?`${r.name}, ${dec(r.w)}×${dec(r.l)} м, изометрия. Стены: ${FIN.wall[r.wall].n.toLowerCase()}, пол: ${FIN.floor[r.floor].n.toLowerCase()}. ${lay.items.map(i=>i.n).join('; ')}. Фасады: ${fac().n.toLowerCase()}.`:'';
+  $('#main').innerHTML=`${banner()}
+  <div class="viz-layout">
+    <section class="card" style="min-width:0">
+      <div class="sec-h"><h2>3D-превью</h2><span class="muted">${STYLES[S.object.style]} · ${fac().n.toLowerCase()}</span></div>
+      <div class="tabs" style="margin-bottom:10px">${valid.map(x=>`<button class="tab" type="button" data-vroom="${x.id}" aria-pressed="${x.id===S.ui.vizRoom}">${esc(x.name)}</button>`).join('')}</div>
+      <figure style="margin:0"><div class="canvas-wrap"><canvas id="viz" role="img" aria-label="${esc(alt)}"></canvas><div class="render-ov" id="ov"><span>Формируем визуализацию…</span><div class="bar"><i id="ovbar" style="width:5%"></i></div></div></div>
+      <figcaption>${esc(alt)}</figcaption></figure>
+      <p class="muted" style="margin:10px 0 0;font-size:12px">В рабочей версии здесь же — фотореалистичный рендер по этому плану через генеративную модель интерьеров (асинхронно, до 30 с).</p>
+    </section>
+    <div class="side-col">
+      <section class="card">
+        <div class="sec-h" style="margin-bottom:8px"><h2>Фасады</h2></div>
+        <div class="swatches">${FAC.map(f=>`<button type="button" class="sw" data-fac="${f.id}" aria-pressed="${f.id===S.facade}"><i style="background:${f.c}"></i><span>${f.n}</span><span class="mono muted">${f.k===1?'база':(f.k>1?'+':'−')+Math.round(Math.abs(f.k-1)*100)+'%'}</span></button>`).join('')}</div>
+        ${hasK?`<div class="sec-h" style="margin:16px 0 8px"><h2>Планировка кухни</h2></div><div class="tabs">${Object.entries(KLAY).map(([k,v])=>`<button class="tab" type="button" data-klay="${k}" aria-pressed="${k===S.klay}">${v}</button>`).join('')}</div>`:''}
+      </section>
+      <section class="card confirm-box">
+        <small class="muted">Итоговая стоимость: мебель, материалы и работы</small>
+        <div class="total-big num">${mln(C.total)}</div>
+        <div class="row" style="gap:16px"><small class="mono">работы ${rub(C.works)}</small><small class="mono">мебель и материалы ${rub(C.furn+C.mat)}</small></div>
+        ${C.total>S.object.budgetMax*1e6?`<div class="banner warn">Выше бюджета на ${mln(C.total-S.object.budgetMax*1e6)}</div>`:''}
+        ${Object.values(C.lays).some(l=>l.issues.length)?`<div class="banner warn">Есть конфликты габаритов. Подтвердить можно, но они попадут в ТЗ как замечания. <button class="btn sm" type="button" data-step="plan">Исправить</button></div>`:''}
+        ${S.confirmed?`<div class="banner ok">Проект подтверждён ${esc(S.confirmed.at)}. Смета зафиксирована.</div><button class="btn primary big" type="button" data-step="tz">Выгрузить ТЗ →</button>`:`<button class="btn primary big" type="button" data-act="confirm">Подтвердить проект</button><small class="muted">Без подтверждения выгрузка ТЗ недоступна. Любое изменение после подтверждения сбросит статус.</small>`}
+      </section>
+    </div>
+  </div>`;
+  if(!r)return;
+  const cv=$('#viz'),ov=$('#ov'),bar=$('#ovbar');clearInterval(renderTimer);let p=5;
+  renderTimer=setInterval(()=>{p+=19;bar.style.width=Math.min(100,p)+'%';if(p>=100){clearInterval(renderTimer);ov.hidden=true;drawViz(cv,r,getComputedStyle(document.documentElement).getPropertyValue('--viz-bg').trim()||'#E4E7E6')}},matchMedia('(prefers-reduced-motion: reduce)').matches?20:110);
+}
+
+/* ---------- Смета ---------- */
+function renderSmeta(){
+  const c=S.confirmed?C:C;
+  $('#main').innerHTML=`${banner()}
+  <section class="card">
+    <div class="sec-h"><h2>Итоговая смета</h2>${S.confirmed?`<span class="pill ok">Зафиксирована ${esc(S.confirmed.at)}</span>`:'<span class="pill draft">Предварительная, фиксируется при подтверждении</span>'}</div>
+    <div class="totals">
+      <div class="tot"><div class="k">Работы</div><div class="v">${rub(c.works)}</div></div>
+      <div class="tot"><div class="k">Мебель и материалы</div><div class="v">${rub(c.furn+c.mat)}</div></div>
+      <div class="tot main"><div class="k">Итого</div><div class="v">${rub(c.total)}</div></div>
+      <div class="tot"><div class="k">Вилка при текущей полноте данных</div><div class="v" style="font-size:14px">${mln(c.lo)} – ${mln(c.hi)}</div></div>
+    </div>
+  </section>
+  <section class="card"><div class="sec-h"><h2>Работы по зонам</h2><span class="muted">${WORKS[S.object.works].toLowerCase()} ремонт · объёмы из анкеты и плана</span></div>${table(c.W.flatMap(g=>[{grp:g.zone,sum:g.sum},...g.rows]),c.works)}</section>
+  <section class="card"><div class="sec-h"><h2>Мебель и оборудование</h2><span class="muted">${c.spec.length} позиций</span></div>
+    <div class="tbl-wrap"><table><thead><tr><th>Помещение</th><th>Позиция</th><th>Размер, см</th><th class="r">Цена</th></tr></thead><tbody>
+    ${c.spec.map(s=>`<tr><td>${esc(s.room)}</td><td>${esc(s.n)}</td><td class="mono">${esc(s.dim)}</td><td class="r mono">${rub(s.p)}</td></tr>`).join('')}
+    <tr class="sum-row"><td colspan="3">Итого мебель и оборудование</td><td class="r mono">${rub(c.furn)}</td></tr></tbody></table></div></section>
+  <section class="card"><div class="sec-h"><h2>Материалы</h2></div>${table(c.M,c.mat)}</section>
+  <div class="next"><button class="btn" type="button" data-step="viz">← Визуализация</button><button class="btn primary big" type="button" data-step="tz">К выгрузке ТЗ →</button></div>`;
+}
+function table(rows,total){
+  return`<div class="tbl-wrap"><table><thead><tr><th>Наименование</th><th class="r">Кол-во</th><th>Ед.</th><th class="r">Цена</th><th class="r">Сумма</th></tr></thead><tbody>
+  ${rows.map(x=>x.grp?`<tr class="grp"><td colspan="4">${esc(x.grp)}</td><td class="r mono">${rub(x.sum)}</td></tr>`:`<tr><td>${esc(x.n)}</td><td class="r mono">${dec(Math.round(x.q*10)/10)}</td><td>${x.u}</td><td class="r mono">${rub(x.p)}</td><td class="r mono">${rub(x.q*x.p)}</td></tr>`).join('')}
+  <tr class="sum-row"><td colspan="4">Итого</td><td class="r mono">${rub(total)}</td></tr></tbody></table></div>`;
+}
+
+/* ---------- ТЗ ---------- */
+function tzData(){
+  const c=C,o=S.object;
+  return{
+    tz:{number:'ТЗ-087-'+(S.confirmed?S.confirmed.at.replace(/\D/g,'').slice(0,8):'черновик'),confirmed_at:S.confirmed&&S.confirmed.at,status:S.confirmed?'confirmed':'draft'},
+    object:{type:OBJ[o.type],area_m2:o.area,ceiling_m:o.height,residents:o.people,repair:WORKS[o.works],style:STYLES[o.style],materials_class:CLS[o.cls].n,budget_rub:[o.budgetMin*1e6,o.budgetMax*1e6]},
+    rooms:S.rooms.map(r=>({id:r.id,name:r.name,type:TYPES[r.type],size_m:[r.w,r.l],area_m2:+(r.w*r.l).toFixed(2),windows:r.win,doors:r.doors,communications:{electric:r.el,plumbing:r.pl,ventilation:r.ve},finish:{walls:FIN.wall[r.wall].n,floor:FIN.floor[r.floor].n,ceiling:FIN.ceil[r.ceil].n},
+      components:(c.lays[r.id]?c.lays[r.id].items:[]).map(i=>({zone:i.label,name:i.n,size_cm:i.w?[i.w,i.d]:null,wall:i.wall,position_cm:i.x!=null?[Math.round(i.x),Math.round(i.y)]:null,price_rub:Math.round(i.p),conflict:!!i.bad}))})),
+    variants:{facades:fac().n,kitchen_layout:KLAY[S.klay]},
+    works:c.W.map(g=>({zone:g.zone,total_rub:Math.round(g.sum),items:g.rows.map(x=>({name:x.n,qty:+x.q.toFixed(2),unit:x.u,price_rub:Math.round(x.p),sum_rub:Math.round(x.q*x.p)}))})),
+    specification:c.spec.map(s=>({room:s.room,name:s.n,size:s.dim,qty:1,price_rub:Math.round(s.p)})),
+    materials:c.M.map(x=>({name:x.n,qty:+x.q.toFixed(2),unit:x.u,price_rub:Math.round(x.p),sum_rub:Math.round(x.q*x.p)})),
+    estimate:{works_rub:Math.round(c.works),furniture_materials_rub:Math.round(c.furn+c.mat),total_rub:Math.round(c.total),range_rub:[Math.round(c.lo),Math.round(c.hi)]},
+    requirements:{keep:Object.entries(S.keep).filter(e=>e[1]).map(e=>({windows:'окна',entry:'входная дверь',radiators:'радиаторы',risers:'стояки и сантехника застройщика'})[e[0]]),avoid:S.avoid,open_issues:Object.values(c.lays).flatMap(l=>l.issues.map(i=>i.msg))},
+    attachments:S.files.filter(f=>f.status==='ok').map(f=>({file:f.name,size_bytes:f.size,room:f.room==='all'?'вся квартира':(S.rooms.find(r=>r.id===f.room)||{}).name}))
+  };
+}
+function toXML(v,tag='tz_export',ind=''){
+  if(Array.isArray(v))return v.map(x=>toXML(x,tag==='items'?'item':tag.replace(/s$/,'')||'item',ind)).join('\n');
+  if(v&&typeof v==='object'){const kids=Object.entries(v).map(([k,x])=>Array.isArray(x)?`${ind}  <${k}>\n${toXML(x,k,ind+'    ')}\n${ind}  </${k}>`:toXML(x,k,ind+'  ')).join('\n');return`${ind}<${tag}>\n${kids}\n${ind}</${tag}>`}
+  return`${ind}<${tag}>${esc(v)}</${tag}>`;
+}
+function renderTZ(){
+  if(!S.confirmed){$('#main').innerHTML=`${banner()}<section class="card lockcard"><span class="ic">ЗАБЛОКИРОВАНО</span><h2>Выгрузка ТЗ откроется после подтверждения проекта</h2><p class="lead" style="margin:0 auto">Проверьте визуализацию и итоговую стоимость, затем нажмите «Подтвердить проект». Смета зафиксируется на момент подтверждения.</p><button class="btn primary big" type="button" data-step="viz">К визуализации</button></section>`;return}
+  const d=tzData(),c=C;
+  const code=S.ui.fmt==='xml'?'<?xml version="1.0" encoding="UTF-8"?>\n'+toXML(d):JSON.stringify(d,null,2);
+  $('#main').innerHTML=`
+  <section class="card">
+    <div class="sec-h"><h2>Выгрузка для ремонтной компании</h2><span class="pill ok">Подтверждено ${esc(S.confirmed.at)}</span></div>
+    <div class="row">
+      <button class="btn primary" type="button" data-act="pdf">PDF</button>
+      <div class="tabs"><button class="tab" type="button" data-fmt="json" aria-pressed="${S.ui.fmt==='json'}">JSON</button><button class="tab" type="button" data-fmt="xml" aria-pressed="${S.ui.fmt==='xml'}">XML</button></div>
+      <button class="btn" type="button" data-act="copy" id="copyBtn">Копировать ${S.ui.fmt.toUpperCase()}</button>
+      <span class="muted" id="pdfNote" style="font-size:12px"></span>
+    </div>
+    <pre class="code" id="code" tabindex="0" style="margin-top:12px">${esc(code)}</pre>
+  </section>
+  <article class="sheet" aria-label="Предпросмотр ТЗ">
+    <div class="title-pg">
+      <small style="color:#5D6770">Техническое задание на ремонт · ${esc(d.tz.number)}</small>
+      <h1>Квартира 87, ${m2(S.object.area)}</h1>
+      <div class="kv"><span>Объект</span><span>${esc(d.object.type)}</span><span>Ремонт</span><span>${esc(d.object.repair)}, материалы «${esc(d.object.materials_class)}»</span><span>Стиль</span><span>${esc(d.object.style)}, фасады: ${esc(d.variants.facades.toLowerCase())}</span><span>Подтверждено заказчиком</span><span>${esc(S.confirmed.at)}</span><span>Итого по смете</span><span><b>${rub(c.total)}</b></span></div>
+    </div>
+    <h2>1. Параметры помещений</h2>
+    <div class="tbl-wrap"><table><thead><tr><th>Помещение</th><th>Размер, м</th><th>Площадь</th><th>Окна / двери</th><th>Коммуникации</th><th>Стены / пол / потолок</th></tr></thead><tbody>
+    ${S.rooms.map(r=>`<tr><td>${esc(r.name)}</td><td class="mono">${dec(r.w)}×${dec(r.l)}</td><td class="mono">${m2(r.w*r.l)}</td><td>${r.win} / ${r.doors}</td><td>${[r.el&&'эл.',r.pl&&'сантех.',r.ve&&'вент.'].filter(Boolean).join(', ')||'—'}</td><td>${FIN.wall[r.wall].n} / ${FIN.floor[r.floor].n} / ${FIN.ceil[r.ceil].n}</td></tr>`).join('')}</tbody></table></div>
+    <small style="color:#5D6770">Высота потолков ${dec(S.object.height)} м · проживает ${S.object.people} чел.</small>
+    <h2>2. План с расстановкой</h2>${planSVG(false)}
+    <h2>3. Визуализация</h2><div class="imgs">${S.rooms.filter(roomOk).map(r=>`<figure style="margin:0"><canvas data-tzviz="${r.id}" role="img" aria-label="Визуализация: ${esc(r.name)}"></canvas><div>${esc(r.name)}</div></figure>`).join('')}</div>
+    <h2>4. Перечень работ по зонам</h2>${table(c.W.flatMap(g=>[{grp:g.zone,sum:g.sum},...g.rows]),c.works)}
+    <h2>5. Спецификация мебели и оборудования</h2>
+    <div class="tbl-wrap"><table><thead><tr><th>Помещение</th><th>Позиция</th><th>Размер, см</th><th class="r">Цена</th></tr></thead><tbody>${c.spec.map(s=>`<tr><td>${esc(s.room)}</td><td>${esc(s.n)}</td><td class="mono">${esc(s.dim)}</td><td class="r mono">${rub(s.p)}</td></tr>`).join('')}</tbody></table></div>
+    <h2>6. Материалы</h2>${table(c.M,c.mat)}
+    <h2>7. Итоговая смета</h2>
+    <div class="kv"><span>Работы</span><span class="mono">${rub(c.works)}</span><span>Мебель и оборудование</span><span class="mono">${rub(c.furn)}</span><span>Материалы</span><span class="mono">${rub(c.mat)}</span><span><b>Итого</b></span><span class="mono"><b>${rub(c.total)}</b></span><span>Диапазон</span><span class="mono">${rub(c.lo)} – ${rub(c.hi)}</span></div>
+    <h2>8. Особые требования</h2>
+    <p style="margin:0 0 6px"><b>Сохранить:</b> ${esc(d.requirements.keep.join(', ')||'—')}</p>
+    <p style="margin:0 0 6px"><b>Избегать:</b> ${esc(S.avoid||'—')}</p>
+    ${d.requirements.open_issues.length?`<p style="margin:0"><b>Открытые замечания:</b> ${esc(d.requirements.open_issues.join('; '))}</p>`:''}
+    <h2>9. Приложенные файлы</h2>
+    <ul style="margin:0;padding-left:18px">${d.attachments.map(a=>`<li>${esc(a.file)} — ${esc(a.room||'')}, ${(a.size_bytes/1048576).toFixed(1)} МБ</li>`).join('')}</ul>
+  </article>`;
+  requestAnimationFrame(()=>document.querySelectorAll('[data-tzviz]').forEach(cv=>drawViz(cv,S.rooms.find(r=>r.id===cv.dataset.tzviz),'#E4E7E6')));
+}
+
+/* ===================== События ===================== */
+function setBind(key,el){
+  let v=el.type==='checkbox'?el.checked:el.type==='number'?(el.value===''?null:parseFloat(el.value)):el.value;
+  const [kind,a,b]=key.split(':');
+  if(kind==='o')S.object[a]=v;
+  else if(kind==='r'){const r=S.rooms.find(x=>x.id===a);if(r){if(['win','doors'].includes(b))v=Math.max(0,Math.round(v||0));r[b]=v}}
+  else if(kind==='q')S.req[a]=v;
+  else if(kind==='k')S.keep[a]=v;
+  else if(key==='avoid')S.avoid=v;
+  else if(key==='klay')S.klay=v;
+}
+document.addEventListener('input',e=>{
+  const el=e.target;
+  if(el.dataset.b&&(el.type==='number'||el.type==='text'||el.tagName==='TEXTAREA')){setBind(el.dataset.b,el);refresh()}
+  if(el.dataset.det){const [fid,i,k]=el.dataset.det.split(':');const f=S.files.find(x=>x.id===fid);if(f)f.det[+i][k]=parseFloat(el.value);save()}
+});
+document.addEventListener('change',e=>{
+  const el=e.target;
+  if(el.dataset.b){setBind(el.dataset.b,el);if(el.dataset.b.endsWith(':type')){const r=S.rooms.find(x=>'r:'+x.id+':type'===el.dataset.b);if(r&&Object.values(TYPES).includes(r.name))r.name=TYPES[r.type]}changed()}
+  if(el.dataset.froom){const f=S.files.find(x=>x.id===el.dataset.froom);f.room=el.value;changed()}
+});
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,[data-pick],[data-room]');if(!t)return;
+  const d=t.dataset;
+  if(d.step){S.ui.step=d.step;S.ui.pick=null;render();window.scrollTo({top:0});return}
+  if(t.id==='mobToggle'){S.ui.mobOpen=!S.ui.mobOpen;renderCost();return}
+  if(d.proom){S.ui.planRoom=d.proom;S.ui.pick=null;render();return}
+  if(d.room&&S.ui.step==='plan'){S.ui.planRoom=d.room;S.ui.pick=null;render();return}
+  if(d.pick||d.pickbtn){const [rid,slot]=(d.pick||d.pickbtn).split('|');const same=S.ui.pick&&S.ui.pick.rid===rid&&S.ui.pick.slot===slot;S.ui.planRoom=rid;S.ui.pick=same&&d.pickbtn?null:{rid,slot};render();return}
+  if(d.alt){if(t.getAttribute('aria-disabled')==='true')return;const [rid,slot,i]=d.alt.split('|');S.sel[rid+'.'+slot]=+i;changed();return}
+  if(d.vroom){S.ui.vizRoom=d.vroom;render();return}
+  if(d.fac){S.facade=d.fac;changed();return}
+  if(d.klay){S.klay=d.klay;changed();return}
+  if(d.fmt){S.ui.fmt=d.fmt;render();return}
+  switch(d.act){
+    case'addRoom':{const type=$('#newType').value;S.rooms.push({id:'r'+Date.now(),type,name:TYPES[type],w:3,l:3,win:type==='bath'||type==='hall'?0:1,doors:1,el:true,pl:['kitchen','bath'].includes(type),ve:['kitchen','bath'].includes(type),wall:type==='bath'?'tile':'paint',floor:type==='bath'?'tile':'laminate',ceil:'stretch'});changed();break}
+    case'delRoom':S.rooms=S.rooms.filter(r=>r.id!==d.id);changed();break;
+    case'delFile':S.files=S.files.filter(f=>f.id!==d.id);changed();break;
+    case'applyRecog':{const f=S.files.find(x=>x.id===d.id);f.det.forEach(x=>{const r=S.rooms.find(y=>y.id===x.id);if(r&&x.w>0&&x.l>0){r.w=x.w;r.l=x.l}});f.recog='applied';f.note='Чертёж распознан, размеры применены';changed();break}
+    case'skipRecog':{const f=S.files.find(x=>x.id===d.id);f.recog='applied';f.note='Чертёж проверен, размеры оставлены из анкеты';changed();break}
+    case'confirm':S.confirmed={sig:sig(),at:new Date().toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}),total:C.total};FLASH='';render();break;
+    case'pdf':$('#pdfNote').textContent='В рабочей версии PDF собирается на сервере из этого же документа. В прототипе — предпросмотр ниже и JSON/XML.';break;
+    case'copy':{const txt=$('#code').textContent;navigator.clipboard.writeText(txt).then(()=>{t.textContent='Скопировано'},()=>{const r=document.createRange();r.selectNodeContents($('#code'));const s=getSelection();s.removeAllRanges();s.addRange(r);t.textContent='Выделено, нажмите Ctrl+C'});break}
+  }
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.dataset&&e.target.dataset.pick){e.preventDefault();e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
+$('#resetBtn').addEventListener('click',()=>{Object.values(BLOBS).forEach(u=>URL.revokeObjectURL(u));S=defaults();FLASH='';render()});
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{const cv=$('#viz');if(cv&&$('#ov').hidden)drawViz(cv,S.rooms.find(r=>r.id===S.ui.vizRoom),getComputedStyle(document.documentElement).getPropertyValue('--viz-bg').trim())},200)});
+render();
+</script>
+
+</body></html>
